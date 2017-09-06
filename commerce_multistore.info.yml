@@ -1,0 +1,8 @@
+name: Commerce Multistore
+type: module
+description: Implements multiple stores/store owners model.
+core: 8.x
+package: Commerce
+dependencies:
+  - commerce
+  - commerce_store

@@ -1,0 +1,14 @@
+{
+  "name": "drupal/commerce_multistore",
+  "type": "drupal-module",
+  "description": "Implements multiple stores/store owners model.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/commerce_multistore",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://github.com/drugan/commerce_multistore/issues",
+    "source": "https://github.com/drugan/commerce_multistore"
+  },
+  "require": { }
+}

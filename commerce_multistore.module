@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Contains commerce_multistore.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function commerce_multistore_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the commerce_multistore module.
+    case 'help.page.commerce_multistore':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Implements multiple stores/store owners model.') . '</p>';
+
+      return $output;
+
+    default:
+  }
+}
