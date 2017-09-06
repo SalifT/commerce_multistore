@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @file
+ * Install and uninstall functions for the commerce_multistore module.
+ */
+
+use Drupal\Core\Session\AccountInterface;
+
+/**
+ * Implements hook_install().
+ */
+function commerce_multistore_install() {
+  $entity_manager = \Drupal::entityManager();
+  $store_types = array_keys($entity_manager->getStorage('commerce_store_type')->loadMultiple());
+  $product_types = array_keys($entity_manager->getStorage('commerce_product_type')->loadMultiple());
+
+  if (!$role = user_role_load('commerce_multistore_store_owner')) {
+    $role = user_role_load(AccountInterface::ANONYMOUS_ROLE)
+      ->createDuplicate()
+      ->set('id', 'commerce_multistore_store_owner')
+      ->set('label', t('Multistore owner'));
+  }
+
+  $permissions = $role->getPermissions();
+  // Add crud permissions for all existing store types.
+  foreach ($store_types as $store_type) {
+    $permissions[] = "create {$store_type} commerce_store";
+    $permissions[] = "update own {$store_type} commerce_store";
+    // @todo Should be a regular store owner allowed to delete own store?
+    // $permissions[] = "delete own {$store_type} commerce_store";
+  }
+
+  // Add crud permissions for all existing product types.
+  foreach ($product_types as $product_type) {
+    $permissions[] = "create {$product_type} commerce_product";
+    $permissions[] = "update own {$product_type} commerce_product";
+    $permissions[] = "delete own {$product_type} commerce_product";
+  }
+
+  $permissions[] = "view own commerce_store";
+  $permissions[] = "view own commerce_product";
+  $role->set('permissions', array_unique($permissions));
+  $role->save();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function commerce_multistore_uninstall() {
+  // Make some clean up after ourselves.
+  if ($role = user_role_load('commerce_multistore_store_owner')) {
+    $role->delete();
+  }
+}
