@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\commerce_multistore\MultistoreAccessControlHandler;
 
 /**
  * Implements hook_help().
@@ -22,4 +23,12 @@ function commerce_multistore_help($route_name, RouteMatchInterface $route_match)
 
     default:
   }
+}
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function commerce_multistore_entity_type_alter(array &$entity_types) {
+  /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
+  $entity_types['commerce_store']->setAccessClass(MultistoreAccessControlHandler::class);
 }
