@@ -9,6 +9,7 @@ use Drupal\Core\Link;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\commerce_multistore\MultistoreStorage;
+use Drupal\commerce_multistore\Form\MultistoreForm;
 use Drupal\commerce_multistore\MultistoreAccessControlHandler;
 use Drupal\commerce_multistore\MultistoreProductTypeAccessControlHandler;
 
@@ -35,6 +36,9 @@ function commerce_multistore_help($route_name, RouteMatchInterface $route_match)
 function commerce_multistore_entity_type_alter(array &$entity_types) {
   /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
   $entity_types['commerce_store']->setStorageClass(MultistoreStorage::class);
+  $entity_types['commerce_store']->setFormClass('add', MultistoreForm::class);
+  $entity_types['commerce_store']->setFormClass('edit', MultistoreForm::class);
+  $entity_types['commerce_store']->setFormClass('default', MultistoreForm::class);
   $entity_types['commerce_store']->setAccessClass(MultistoreAccessControlHandler::class);
   $entity_types['commerce_product_type']->setAccessClass(MultistoreProductTypeAccessControlHandler::class);
 }
