@@ -5,11 +5,10 @@
  * Contains commerce_multistore.module.
  */
 
-use Drupal\Core\Link;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\commerce_multistore\MultistoreStorage;
 use Drupal\commerce_multistore\Form\MultistoreForm;
+use Drupal\commerce_multistore\Form\MultistoreProductForm;
 use Drupal\commerce_multistore\MultistoreAccessControlHandler;
 use Drupal\commerce_multistore\MultistoreProductTypeAccessControlHandler;
 
@@ -39,57 +38,9 @@ function commerce_multistore_entity_type_alter(array &$entity_types) {
   $entity_types['commerce_store']->setFormClass('add', MultistoreForm::class);
   $entity_types['commerce_store']->setFormClass('edit', MultistoreForm::class);
   $entity_types['commerce_store']->setFormClass('default', MultistoreForm::class);
+  $entity_types['commerce_product']->setFormClass('add', MultistoreProductForm::class);
+  $entity_types['commerce_product']->setFormClass('edit', MultistoreProductForm::class);
+  $entity_types['commerce_product']->setFormClass('default', MultistoreProductForm::class);
   $entity_types['commerce_store']->setAccessClass(MultistoreAccessControlHandler::class);
   $entity_types['commerce_product_type']->setAccessClass(MultistoreProductTypeAccessControlHandler::class);
-}
-
-/**
- * Implements hook_form_BASE_FORM_ID_alter().
- */
-function commerce_multistore_form_commerce_product_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $user = \Drupal::currentUser();
-  $entity_manager = \Drupal::entityManager();
-  $uid = $user->id();
-  $store_owner = NULL;
-  if ($stores = $entity_manager->getStorage('commerce_store')) {
-    foreach ($stores->loadMultiple() as $store) {
-      if ($store->getOwnerId() == $uid) {
-        $store_owner = TRUE;
-        break;
-      }
-    }
-  }
-
-  if (!$store_owner) {
-    $commerce_store = $entity_manager->getStorage('commerce_store')->getEntityType();
-    $admin = $can_add = $user->hasPermission($commerce_store->getAdminPermission());
-    if (!$admin && $store_types = $entity_manager->getStorage('commerce_store_type')) {
-      foreach ($store_types->loadMultiple() as $store_type => $store) {
-        if ($can_add = $user->hasPermission("create {$store_type} commerce_store")) {
-          break;
-        }
-      }
-    }
-    else if (isset($store)) {
-      // Admin can add products to other people's stores even not being owner of
-      // a store. So, display a product form.
-      return;
-    }
-
-    if ($can_add) {
-      $link = Link::createFromRoute('Add a new store.', 'entity.commerce_store.add_page');
-      $markup = t("Products can't be created until a store has been added. @link", ['@link' => $link->toString()]);
-    }
-    else {
-      $markup = t("Oops! Seems the site administrator has granted for you a permission to create products but somehow forgotten about the permission to add your own store. Unfortunately, products can't be created until a store has been added.");
-    }
-    $form = [
-      '#tree' => FALSE,
-      '#array_parents' => [],
-      '#parents' => [],
-      'warning' => [
-        '#markup' => $markup,
-      ],
-    ];
-  }
 }

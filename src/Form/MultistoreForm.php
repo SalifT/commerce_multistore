@@ -5,6 +5,9 @@ namespace Drupal\commerce_multistore\Form;
 use Drupal\commerce_store\Form\StoreForm;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Overrides the store add/edit form.
+ */
 class MultistoreForm extends StoreForm {
 
   /**
