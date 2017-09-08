@@ -56,4 +56,10 @@ function commerce_multistore_uninstall() {
   if ($role = user_role_load('commerce_multistore_store_owner')) {
     $role->delete();
   }
+  if (\Drupal::moduleHandler()->moduleExists('views')) {
+    $view = \Drupal::configFactory()->getEditable('views.view.commerce_multistore_administer_stores');
+    if ($view && !$view->isNew()) {
+      $view->delete();
+    }
+  }
 }
