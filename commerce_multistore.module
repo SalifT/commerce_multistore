@@ -31,6 +31,21 @@ function commerce_multistore_help($route_name, RouteMatchInterface $route_match)
 }
 
 /**
+ * Implements hook_theme().
+ */
+function commerce_multistore_theme() {
+  return [
+    'commerce_multistore_label_compact' => [
+      'variables' =>
+        [
+          'attributes' => [],
+          'content_attributes' => [],
+        ],
+    ],
+  ];
+}
+
+/**
  * Implements hook_entity_type_alter().
  */
 function commerce_multistore_entity_type_alter(array &$entity_types) {

@@ -1,0 +1,24 @@
+field.formatter.settings.commerce_multistore_label_compact:
+  type: mapping
+  mapping:
+    summary:
+      type: string
+      label: 'Summary title'
+    open:
+      type: boolean
+      label: 'Whether to show details element expanded by default'
+    list:
+      type: sequence
+      label: 'List style'
+      sequence:
+        type: string
+        label: 'The HTML list''s element style'
+    separator:
+      type: string
+      label: 'The separator for the simple inline list items'
+    max:
+      type: int
+      label: 'The maximum number of labels to display'
+    offset:
+      type: int
+      label: 'The offset where to start labels to display'

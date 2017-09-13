@@ -1,0 +1,47 @@
+{#
+/**
+ * @file
+ * Theme override for an entity reference label.
+ *
+ * Available variables:
+ * - attributes: settings for the container.
+ *   - link: boolean, whether a label should be referenced to the entity.
+ *   - summary: The detail's element summary content.
+ *     - #markup: The safe markup processed by the Html::escape().
+ *   - open: boolean, whether details element should be expanded by default.
+ *   - list: The type of list element. Possible values: ul, ol, simple.
+ *   - separator: The string to separate simple list elements.
+ *     - #markup: The safe markup processed by the Html::escape().
+ *   - attributes: HTML attributes for the list element.
+ *   - max: The maximum list items to display. Handled by the formatter class.
+ *   - offset: The item to start display from. Handled by the formatter class.
+ * - content_attributes: The array of AttributeArray objects having properties:
+ *   - #type: The list item type.
+ *   - #title: The title for a label linked to content.
+ *   - #url: The Url object for a label linked to content.
+ *   - #plain_text: The text content for a plain text label.
+ *
+ * The formatter might be used for any referenced entity, both in views and
+ * entity display.
+ */
+#}
+<details class="label-compact-details" {{ attributes.open == "1" ? "open" : "" }}>
+  <summary class="label-compact-details-summary">{{ attributes.summary['#markup']|raw }}</summary>
+  {% if attributes.list != "simple" %}
+    <{{ attributes.list }} class="label-compact-list">
+      {% for label in content_attributes %}
+        <li class="label-compact-list-item">
+          {{ label['#type'] == "link" ? link(label['#title'], label['#url']) : label['#plain_text'] }}
+        </li>
+      {% endfor %}
+    </{{ attributes.list }}>
+  {% else %}
+    {% set the_last = content_attributes|last %}
+    {% set str = attributes.separator['#markup'] %}
+    {% for label in content_attributes %}
+      <span class="label-compact-inline-list-item">
+        {{ label['#type'] == "link" ? link(label['#title'], label['#url']) : label['#plain_text'] }}{{ label == the_last ? "" : str|raw }}
+      </span>
+    {% endfor %}
+  {% endif %}
+</details>
