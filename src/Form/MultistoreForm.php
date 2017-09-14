@@ -13,6 +13,20 @@ class MultistoreForm extends StoreForm {
   /**
    * {@inheritdoc}
    */
+  public function form(array $form, FormStateInterface $form_state) {
+    $form = parent::form($form, $form_state);
+
+    // A regular store owner should not be allowed to change default store.
+    if (!$this->currentUser()->hasPermission($this->getEntity()->getEntityType()->getAdminPermission())) {
+      unset($form['default']);
+    }
+
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function save(array $form, FormStateInterface $form_state) {
     parent::save($form, $form_state);
     // Redirect to the store/ID page.
