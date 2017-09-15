@@ -5,6 +5,7 @@
  * Contains commerce_multistore.module.
  */
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\commerce_multistore\MultistoreStorage;
 use Drupal\commerce_multistore\Form\MultistoreForm;
@@ -66,4 +67,27 @@ function commerce_multistore_entity_type_alter(array &$entity_types) {
  */
 function commerce_multistore_views_plugins_argument_default_alter(array &$plugins) {
   $plugins['user']['class'] = MultistoreUser::class;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function commerce_multistore_form_commerce_store_gateways_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $params = explode('/', \Drupal::request()->getPathInfo());
+  $id = !empty($params[2]) ? $params[2] : NULL;
+  if ($id && $store = \Drupal::entityManager()->getStorage('commerce_store')->load($id)) {
+    $form['#title'] = $store->getName();
+  }
+}
+
+/**
+ * Implements hook_local_tasks_alter().
+ */
+function commerce_multistore_local_tasks_alter(&$local_tasks) {
+  // Insert tab provided by the commerce_store_gateways module at the left of
+  // store/ID/products tab.
+  if (isset($local_tasks['commerce_store_gateways.manage'])) {
+    $local_tasks['commerce_store_gateways.manage']['base_route'] = 'entity.commerce_store.canonical';
+    $local_tasks['commerce_store_gateways.manage']['weight'] = 3;
+  }
 }
