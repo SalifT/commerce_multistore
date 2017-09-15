@@ -62,4 +62,10 @@ function commerce_multistore_uninstall() {
       $view->delete();
     }
   }
+
+  $config = \Drupal::configFactory()->getEditable('commerce_store.settings');
+  if ($config->get('commerce_multistore')) {
+    $config->clear('commerce_multistore');
+    $config->save();
+  }
 }

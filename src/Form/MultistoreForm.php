@@ -2,8 +2,8 @@
 
 namespace Drupal\commerce_multistore\Form;
 
-use Drupal\commerce_store\Form\StoreForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\commerce_store\Form\StoreForm;
 
 /**
  * Overrides the store add/edit form.
@@ -15,11 +15,36 @@ class MultistoreForm extends StoreForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
-
-    // A regular store owner should not be allowed to change default store.
-    if (!$this->currentUser()->hasPermission($this->getEntity()->getEntityType()->getAdminPermission())) {
-      unset($form['default']);
+    $user = $this->currentUser();
+    /** @var \Drupal\commerce_store\StoreStorageInterface $store_storage */
+    $store_storage = $this->entityTypeManager->getStorage('commerce_store');
+    $default_store = $store_storage->loadDefault();
+    // If there is no default store saved then the currently edited store will
+    // be forced to default. After saving the default that can be reassigned to
+    // any other store available.
+    $isDefault = TRUE;
+    if ($default_store && !$default_store->isNew()) {
+      if(!$isDefault = $default_store->uuid() == $this->entity->uuid()) {
+        $link = $default_store->toLink($default_store->getName(), 'edit-form')->toString()->getGeneratedLink();
+        $form['warning'] = [
+          '#markup' => $this->t('Current default store: ') . "<strong>{$link}</strong>",
+          '#weight' => $form['name']['#weight'] - 1,
+        ];
+      }
     }
+
+    if ($user->hasPermission($this->getEntity()->getEntityType()->getAdminPermission())) {
+      $form['default']['#title'] = $this->t('Global default store');
+      $form['default']['#description'] = $this->t("As admin you may assign for this purpose your own store or any other owner's store. Note that disregarding of this setting each regular store owner have their own default store.");
+    }
+    else {
+      $form['default']['#title'] = $this->t('Default store');
+      $form['default']['#description'] = $this->t('Only one store might be set as default per a store owner. You can change the default store by assigning it to any other of your stores.');
+    }
+
+    $form['default']['#weight'] = $form['name']['#weight'] - 1;
+    $form['default']['#default_value'] = $isDefault;
+    $form['default']['#disabled'] = $isDefault;
 
     return $form;
   }
@@ -28,6 +53,9 @@ class MultistoreForm extends StoreForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
+    if ($this->entity->isNew()) {
+      $this->entity->enforceIsNew(FALSE);
+    }
     parent::save($form, $form_state);
     // Redirect to the store/ID page.
     $form_state->setRedirectUrl($this->entity->toUrl());
