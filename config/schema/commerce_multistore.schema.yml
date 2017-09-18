@@ -22,3 +22,7 @@ field.formatter.settings.commerce_multistore_label_compact:
     offset:
       type: int
       label: 'The offset where to start labels to display'
+
+action.configuration.commerce_multistore_mark_as_default:
+  type: action_configuration_default
+  label: 'Configuration for the Mark as default action'

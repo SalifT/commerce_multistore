@@ -6,3 +6,7 @@ package: Commerce (contrib)
 dependencies:
   - commerce
   - commerce_store
+  - commerce_product
+config_devel:
+  install:
+    - system.action.commerce_multistore_mark_as_default
