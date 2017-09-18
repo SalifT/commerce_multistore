@@ -97,4 +97,8 @@ function commerce_multistore_local_tasks_alter(&$local_tasks) {
     $local_tasks['commerce_store_gateways.manage']['base_route'] = 'entity.commerce_store.canonical';
     $local_tasks['commerce_store_gateways.manage']['weight'] = 3;
   }
+  if (isset($local_tasks['entity.commerce_store.edit_form'])) {
+    $local_tasks['entity.commerce_store.edit_form']['base_route'] = 'entity.commerce_store.canonical';
+    $local_tasks['entity.commerce_store.edit_form']['weight'] = 1;
+  }
 }
