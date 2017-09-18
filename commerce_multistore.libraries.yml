@@ -1,0 +1,5 @@
+multistore_default:
+  version: VERSION
+  css:
+    theme:
+      css/commerce_multistore.theme.css: {}

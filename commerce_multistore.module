@@ -43,6 +43,13 @@ function commerce_multistore_theme() {
           'content_attributes' => [],
         ],
     ],
+    'commerce_multistore_name' => [
+      'variables' =>
+        [
+          'attributes' => [],
+          'content_attributes' => [],
+        ],
+    ],
   ];
 }
 

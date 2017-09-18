@@ -1,0 +1,46 @@
+/**
+ * @file
+ * Default theme implementation for Commerce Multistore components
+ *
+ */
+.multistore-name {
+  font-weight: bold;
+  padding: 0 5px;
+}
+
+.global-default-store {
+  border-top: 2px solid red;
+  border-left: 2px solid red;
+}
+
+.owner-default-store {
+  border-bottom: 2px solid green;
+  border-right: 2px solid green;
+}
+
+.multistore-global-label,
+.multistore-owner-label {
+  font-size: 80%;
+}
+
+.multistore-owner-label {
+  float: right;
+}
+
+.multistore-global-label:before,
+.multistore-owner-label:after {
+  content: '√';
+  font-size: 150%;
+  font-weight: bold;
+}
+
+.multistore-global-label:before {
+  color: red;
+}
+
+.multistore-owner-label:after {
+  color: green;
+}
+
+
+

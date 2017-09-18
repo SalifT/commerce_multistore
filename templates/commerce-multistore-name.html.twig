@@ -1,0 +1,33 @@
+{#
+/**
+ * @file
+ * Theme override for a store name.
+ *
+ * Available variables:
+ * - attributes: settings for the container.
+ *   - global: The text label for a global default store.
+ *   - owner: The text label for an owner's default store.
+ * - content_attributes: The array of the following elements:
+ *   - type: The store name item type.
+ *   - title: The name of a store.
+ *   - url: The Url object for the store's name.
+ *
+ * The formatter might be used in views to mark with CSS both the global and an
+ * owner's default store.
+ */
+#}
+{% set global_class = attributes.global ? 'global-default-store ' : '' %}
+{% set owner_class = attributes.owner ? 'owner-default-store ' : '' %}
+{% if attributes.global %}
+  <span class="multistore-global-label">
+    {{ attributes.global }}
+  </span>
+{% endif %}
+<div{{ attributes.setAttribute('class', global_class ~ owner_class ~ 'multistore-name') }}>
+  {{ content_attributes.type == "link" ? link(content_attributes.title, content_attributes.url) : content_attributes.title }}
+</div>
+{% if attributes.owner %}
+  <span class="multistore-owner-label">
+    {{ attributes.owner }}
+  </span>
+{% endif %}
