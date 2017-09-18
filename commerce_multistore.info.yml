@@ -10,3 +10,4 @@ dependencies:
 config_devel:
   install:
     - system.action.commerce_multistore_mark_as_default
+    - views.view.commerce_multistore_administer_stores
