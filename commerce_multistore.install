@@ -11,6 +11,15 @@ use Drupal\Core\Session\AccountInterface;
  * Implements hook_install().
  */
 function commerce_multistore_install() {
+  // Disable default Stores view.
+  if (\Drupal::moduleHandler()->moduleExists('views')) {
+    $view = \Drupal::configFactory()->getEditable('views.view.commerce_stores');
+    if ($view) {
+      $view->set('status', FALSE);
+      $view->save();
+    }
+  }
+
   $entity_manager = \Drupal::entityManager();
   $store_types = array_keys($entity_manager->getStorage('commerce_store_type')->loadMultiple());
   $product_types = array_keys($entity_manager->getStorage('commerce_product_type')->loadMultiple());
@@ -56,12 +65,6 @@ function commerce_multistore_uninstall() {
   if ($role = user_role_load('commerce_multistore_store_owner')) {
     $role->delete();
   }
-  if (\Drupal::moduleHandler()->moduleExists('views')) {
-    $view = \Drupal::configFactory()->getEditable('views.view.commerce_multistore_administer_stores');
-    if ($view && !$view->isNew()) {
-      $view->delete();
-    }
-  }
 
   $config = \Drupal::configFactory();
 
@@ -75,5 +78,19 @@ function commerce_multistore_uninstall() {
   if ($action) {
     $action->clear();
     $action->save();
+  }
+
+  if (\Drupal::moduleHandler()->moduleExists('views')) {
+
+    $view = $config->getEditable('views.view.commerce_multistore_administer_stores');
+    if ($view && !$view->isNew()) {
+      $view->delete();
+    }
+
+    $view = $config->getEditable('views.view.commerce_stores');
+    if ($view) {
+      $view->set('status', TRUE);
+      $view->save();
+    }
   }
 }
