@@ -24,45 +24,65 @@ function commerce_multistore_install() {
   $store_types = array_keys($entity_manager->getStorage('commerce_store_type')->loadMultiple());
   $product_types = array_keys($entity_manager->getStorage('commerce_product_type')->loadMultiple());
 
-  if (!$role = user_role_load('commerce_multistore_store_owner')) {
-    $role = user_role_load(AccountInterface::ANONYMOUS_ROLE)
-      ->createDuplicate()
-      ->set('id', 'commerce_multistore_store_owner')
-      ->set('label', t('Multistore owner'));
+  if ($role = user_role_load('commerce_multistore_owner')) {
+    $permissions = $role->getPermissions();
+    // Add crud permissions for all existing store types.
+    foreach ($store_types as $store_type) {
+      $permissions[] = "create {$store_type} commerce_store";
+      $permissions[] = "update own {$store_type} commerce_store";
+      // @todo Should be a regular store owner allowed to delete own store?
+      // $permissions[] = "delete own {$store_type} commerce_store";
+    }
+
+    // Add crud permissions for all existing product types.
+    foreach ($product_types as $product_type) {
+      $permissions[] = "create {$product_type} commerce_product";
+      $permissions[] = "update own {$product_type} commerce_product";
+      $permissions[] = "delete own {$product_type} commerce_product";
+    }
+
+    $permissions[] = 'view own commerce_store';
+    $permissions[] = 'view own commerce_product';
+    // This permission is required to view product type labels in views.
+    $permissions[] = 'view any commerce_product';
+    $permissions[] = 'view own commerce_order';
+    $permissions[] = 'view own commerce_payment_method';
+    $role->set('permissions', array_unique($permissions));
+    $role->save();
   }
 
-  $permissions = $role->getPermissions();
-  // Add crud permissions for all existing store types.
-  foreach ($store_types as $store_type) {
-    $permissions[] = "create {$store_type} commerce_store";
-    $permissions[] = "update own {$store_type} commerce_store";
-    // @todo Should be a regular store owner allowed to delete own store?
-    // $permissions[] = "delete own {$store_type} commerce_store";
-  }
+  // Add multistore owner permissions to admin's permissions.
+  if ($role && $admin_role = user_role_load('commerce_multistore_admin')) {
+    $permissions = $admin_role->getPermissions();
+    $owner_permissions = $role->getPermissions();
 
-  // Add crud permissions for all existing product types.
-  foreach ($product_types as $product_type) {
-    $permissions[] = "create {$product_type} commerce_product";
-    $permissions[] = "update own {$product_type} commerce_product";
-    $permissions[] = "delete own {$product_type} commerce_product";
-  }
+    foreach ($store_types as $store_type) {
+      $permissions[] = "delete own {$store_type} commerce_store";
+      $permissions[] = "delete any {$store_type} commerce_store";
+      $permissions[] = "update any {$store_type} commerce_store";
+    }
 
-  $permissions[] = 'view own commerce_store';
-  $permissions[] = 'view own commerce_product';
-  // This permission is required to view product type labels in views.
-  $permissions[] = 'view any commerce_product';
-  $permissions[] = 'view own commerce_order';
-  $permissions[] = 'view own commerce_payment_method';
-  $role->set('permissions', array_unique($permissions));
-  $role->save();
+    foreach ($product_types as $product_type) {
+      $permissions[] = "update any {$product_type} commerce_product";
+      $permissions[] = "delete any {$product_type} commerce_product";
+    }
+
+    $permissions = array_merge($permissions, $owner_permissions);
+    $admin_role->set('permissions', array_unique($permissions));
+    $admin_role->save();
+  }
 }
+
 
 /**
  * Implements hook_uninstall().
  */
 function commerce_multistore_uninstall() {
   // Make some clean up after ourselves.
-  if ($role = user_role_load('commerce_multistore_store_owner')) {
+  if ($role = user_role_load('commerce_multistore_owner')) {
+    $role->delete();
+  }
+  if ($role = user_role_load('commerce_multistore_admin')) {
     $role->delete();
   }
 
@@ -76,8 +96,7 @@ function commerce_multistore_uninstall() {
 
   $action = $config->getEditable('system.action.commerce_multistore_mark_as_default');
   if ($action) {
-    $action->clear();
-    $action->save();
+    $action->delete();
   }
 
   if (\Drupal::moduleHandler()->moduleExists('views')) {

@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies: {  }
+id: commerce_multistore_owner
+label: 'Multistore owner'
+is_admin: null
+permissions:
+  - 'access cart'
+  - 'access checkout'
+  - 'access comments'
+  - 'access content'
+  - 'access site-wide contact form'
+  - 'search content'
