@@ -7,6 +7,7 @@
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\commerce_store\Entity\StoreInterface;
 use Drupal\commerce_multistore\MultistoreStorage;
 use Drupal\commerce_multistore\Form\MultistoreForm;
 use Drupal\commerce_multistore\Form\MultistoreProductForm;
@@ -80,9 +81,8 @@ function commerce_multistore_views_plugins_argument_default_alter(array &$plugin
  * Implements hook_form_FORM_ID_alter().
  */
 function commerce_multistore_form_commerce_store_gateways_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $params = explode('/', \Drupal::request()->getPathInfo());
-  $id = !empty($params[2]) ? $params[2] : NULL;
-  if ($id && $store = \Drupal::entityManager()->getStorage('commerce_store')->load($id)) {
+  $store = \Drupal::routeMatch()->getParameter('commerce_store');
+  if ($store instanceof StoreInterface) {
     $form['#title'] = $store->getName();
   }
 }
