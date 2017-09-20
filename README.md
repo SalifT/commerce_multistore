@@ -59,8 +59,8 @@ tab the admin will see only those stores which are owned by them. So, to
 administer the site's stores they still require to visit [admin/commerce/config/stores](#)
 page.
 
-A regular *Multistore owner* cannot change their store owner. Only an admin has
-access to the *Owner* autocompletion field.
+A regular *Multistore owner* cannot change their store owner or product author.
+Only an admin has access to the *Owner* and *Author* autocompletion fields.
 
 The module implements different default store model. Each regular store owner
 has their own default store in the set of stores belonging to them. At the same

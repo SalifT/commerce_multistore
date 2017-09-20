@@ -12,6 +12,7 @@ use Drupal\commerce_multistore\MultistoreStorage;
 use Drupal\commerce_multistore\Form\MultistoreForm;
 use Drupal\commerce_multistore\Form\MultistoreProductForm;
 use Drupal\commerce_multistore\MultistoreAccessControlHandler;
+use Drupal\commerce_multistore\MultistoreProductAccessControlHandler;
 use Drupal\commerce_multistore\MultistoreProductTypeAccessControlHandler;
 use Drupal\commerce_multistore\Plugin\views\argument_default\MultistoreUser;
 
@@ -63,10 +64,11 @@ function commerce_multistore_entity_type_alter(array &$entity_types) {
   $entity_types['commerce_store']->setFormClass('add', MultistoreForm::class);
   $entity_types['commerce_store']->setFormClass('edit', MultistoreForm::class);
   $entity_types['commerce_store']->setFormClass('default', MultistoreForm::class);
+  $entity_types['commerce_store']->setAccessClass(MultistoreAccessControlHandler::class);
   $entity_types['commerce_product']->setFormClass('add', MultistoreProductForm::class);
   $entity_types['commerce_product']->setFormClass('edit', MultistoreProductForm::class);
   $entity_types['commerce_product']->setFormClass('default', MultistoreProductForm::class);
-  $entity_types['commerce_store']->setAccessClass(MultistoreAccessControlHandler::class);
+  $entity_types['commerce_product']->setAccessClass(MultistoreProductAccessControlHandler::class);
   $entity_types['commerce_product_type']->setAccessClass(MultistoreProductTypeAccessControlHandler::class);
 }
 
