@@ -41,12 +41,6 @@ function commerce_multistore_install() {
       $permissions[] = "delete own {$product_type} commerce_product";
     }
 
-    $permissions[] = 'view own commerce_store';
-    $permissions[] = 'view own commerce_product';
-    // This permission is required to view product type labels in views.
-    $permissions[] = 'view any commerce_product';
-    $permissions[] = 'view own commerce_order';
-    $permissions[] = 'view own commerce_payment_method';
     $role->set('permissions', array_unique($permissions));
     $role->save();
   }
