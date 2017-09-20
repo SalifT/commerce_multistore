@@ -2,15 +2,16 @@
 
 namespace Drupal\commerce_multistore\Resolver;
 
-use Drupal\commerce_store\Resolver\StoreResolverInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\commerce_product\Entity\ProductInterface;
+use Drupal\commerce_store\Resolver\StoreResolverInterface;
 
 /**
  * Returns the product's default store, when a product is present in the URL.
  *
- * Ensures that the current store is always correct when viewing
- * the product in admin pages, or going through checkout.
+ * Ensures that the current store is always correct when viewing or editing the
+ * product.
  */
 class MultistoreProductDefaultStoreResolver implements StoreResolverInterface {
   /**
@@ -45,7 +46,6 @@ class MultistoreProductDefaultStoreResolver implements StoreResolverInterface {
    */
   public function resolve() {
     $product = $this->routeMatch->getParameter('commerce_product');
-
     if ($product instanceof ProductInterface) {
       $storage = $this->entityManager->getStorage('commerce_store');
       // The default store specific for this particular product owner. If the
