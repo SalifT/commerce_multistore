@@ -26,11 +26,13 @@ class MultistoreStorage extends StoreStorage {
       $result = parent::getQuery()->execute();
     }
 
-    $entities = $result ? parent::loadMultiple($result) : [];
-    foreach (parent::loadMultiple($result) as $store) {
-      if ($uuid && $store->uuid() == $uuid) {
-        $default = $store;
-        break;
+    if ($result) {
+      $stores = parent::loadMultiple($result);
+      foreach ($stores as $store) {
+        if ($uuid && $store->uuid() == $uuid) {
+          $default = $store;
+          break;
+        }
       }
     }
 
@@ -39,7 +41,9 @@ class MultistoreStorage extends StoreStorage {
       // deleted, so we need to return at least the last found store.
       $default = $store;
       $default->enforceIsNew();
-      drupal_set_message(t('No one default store is assigned yet. Note that it is recommended to have one explicitly assigned otherwise the last found store will be dimmed as the default. This may lead to unexpected behaviour.'), 'warning', FALSE);
+      if (count($stores) > 1) {
+        drupal_set_message(t('No one default store is assigned yet. Note that it is recommended to have one explicitly assigned otherwise the last found store will be dimmed as the default. This may lead to unexpected behaviour.'), 'warning', FALSE);
+      }
     }
 
     return $default;
@@ -98,10 +102,11 @@ class MultistoreStorage extends StoreStorage {
   public function getQuery($conjunction = 'AND') {
     $query = parent::getQuery($conjunction);
 
-    // If the current user is not an admin we restrict the query to the stores
-    // owned by the user or, if the $uid === 0, return the query for the
-    // anonymous user which obviously cannot be the owner of any store.
-    if (($uid = $this->getCurrentUserId()) || $uid === 0) {
+    // If the current user is not an admin ($uid === FALSE) we restrict the
+    // query to the stores owned by the user or, if the $uid === 0, return the
+    // query for the anonymous user which should not be the owner of any store.
+    $uid = $this->getCurrentUserId();
+    if ($uid !== FALSE) {
       $query->condition('uid', $uid);
     }
 
