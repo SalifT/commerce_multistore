@@ -18,11 +18,21 @@ class MultistoreAccessControlHandler extends EntityAccessControlHandler {
    * {@inheritdoc}
    */
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
-    // Only allow users to create permitted store types.
+    // Only allow users to create limited number of permitted store types.
     $result = parent::checkCreateAccess($account, $context, $entity_bundle);
     if ($result->isNeutral() || !$result->isForbidden()) {
-      $admin = $account->hasPermission($this->entityType->getAdminPermission());
-      $allowed = $admin ?: $account->hasPermission("create {$entity_bundle} commerce_store");
+      if (!$allowed = $account->hasPermission($this->entityType->getAdminPermission())) {
+        if ($allowed = $account->hasPermission("create {$entity_bundle} commerce_store")) {
+          $storage = \Drupal::entityTypeManager()->getStorage($this->entityTypeId);
+          $uid = $account->id();
+          $limit = $storage->getStoreLimit($entity_bundle, $uid);
+          $limit = $limit[$uid] ?: $limit[$entity_bundle];
+          if ($limit) {
+            $stores = $storage->getQuery()->execute();
+            $allowed = count($stores) < $limit;
+          }
+        }
+      }
       $result = AccessResult::allowedIf($allowed);
     }
 

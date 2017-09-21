@@ -18,7 +18,7 @@ class MultistoreStorage extends StoreStorage {
     $default = NULL;
     $config = $this->configFactory->get('commerce_store.settings');
     if ($uid = $this->getCurrentUserId($user)) {
-      $uuid = $config->get("commerce_multistore.owner_{$uid}.default_store");
+      $uuid = $config->get("commerce_multistore.owners.{$uid}.default_store");
       $result = parent::getQuery()->condition('uid', $uid)->execute();
     }
     else {
@@ -63,8 +63,8 @@ class MultistoreStorage extends StoreStorage {
       }
     }
     else if ($uid) {
-      if ($config->get("commerce_multistore.owner_{$uid}.default_store") != $store->uuid()) {
-        $config->set("commerce_multistore.owner_{$uid}.default_store", $store->uuid());
+      if ($config->get("commerce_multistore.owners.{$uid}.default_store") != $store->uuid()) {
+        $config->set("commerce_multistore.owners.{$uid}.default_store", $store->uuid());
         $config->save();
       }
     }
@@ -129,6 +129,36 @@ class MultistoreStorage extends StoreStorage {
     }
 
     return  $uid;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setStoreLimit($store_type, $limit, $uid = NULL) {
+    $config = $this->configFactory->getEditable('commerce_store.settings');
+    if ($uid) {
+      $config->set("commerce_multistore.owners.{$uid}.{$store_type}.limit", $limit);
+    }
+    else {
+      $config->set("commerce_multistore.stores.{$store_type}.limit", $limit);
+    }
+    $config->save();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getStoreLimit($store_type, $uid = NULL) {
+    $config = \Drupal::configFactory()->get('commerce_store.settings');
+    $value = $config->get("commerce_multistore.stores.{$store_type}.limit");
+    if ($uid) {
+      $value = [
+        $store_type => $value,
+        $uid => $config->get("commerce_multistore.owners.{$uid}.{$store_type}.limit"),
+      ];
+    }
+
+    return $value;
   }
 
 }

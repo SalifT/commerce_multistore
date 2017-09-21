@@ -35,9 +35,23 @@ class MultistoreForm extends StoreForm {
 
     $form['default']['#description'] = $this->t('The basic role of default store is to be the last in a chain of stores resolved for a particular commerce action. For example, you may have the same product added to different stores and sold in some countries with different taxes applied. So, if no one country condition is met then this product will be handled as if it belongs to the current default store.');
 
-    if ($user->hasPermission($this->getEntity()->getEntityType()->getAdminPermission())) {
+    if ($user->hasPermission($this->entity->getEntityType()->getAdminPermission())) {
       $form['default']['#title'] = $this->t('Global default store');
       $form['default']['#description'] .= ' ' . $this->t("As admin you may assign for this purpose your own store or any other owner's store. Note that disregarding of this setting each regular store owner have their own default store.");
+      if (($uid = $this->entity->getOwnerId()) && $uid != $user->id()) {
+        $entity_type = $this->entity->bundle();
+        $limit = $store_storage->getStoreLimit($entity_type, $uid);
+
+        $form['multistore_limit'] = [
+          '#type' => 'number',
+          '#step' => 1,
+          '#min' => 1,
+          '#weight' =>  $form['uid']['#weight'] + 1,
+          '#title' => t('The maximum stores allowed'),
+          '#description' => t('Override the number of stores of this type allowed to create by the current store owner.'),
+          '#default_value' => $limit[$uid] ?: $limit[$entity_type],
+        ];
+      }
     }
     else {
       $form['default']['#title'] = $this->t('Default store');
@@ -59,6 +73,13 @@ class MultistoreForm extends StoreForm {
       $this->entity->enforceIsNew(FALSE);
     }
     parent::save($form, $form_state);
+    if ($value = $form_state->getValue('multistore_limit')) {
+      if ($value != $form['multistore_limit']['#default_value']) {
+        /** @var \Drupal\commerce_multistore\StoreStorageInterface $store_storage */
+        $store_storage = $this->entityTypeManager->getStorage('commerce_store');
+        $store_storage->setStoreLimit($this->entity->bundle(), $value, $this->entity->getOwnerId());
+      }
+    }
     // Redirect to the store/ID page.
     $form_state->setRedirectUrl($this->entity->toUrl());
   }

@@ -42,7 +42,7 @@ class MultistoreNameFormatter extends StringFormatter {
           $attributes['global'] = $global;
         }
         $uid = $item->getEntity()->getOwnerId();
-        if ($config->get("commerce_multistore.owner_{$uid}.default_store") == $uuid['value']) {
+        if ($config->get("commerce_multistore.owners.{$uid}.default_store") == $uuid['value']) {
           $attributes['owner'] = $owner;
         }
 

@@ -39,6 +39,28 @@ and other administering tasks. This role has the same permissions as the *user
 1* except users, text formats, modules, themes handling and some other
 important tasks. Think of it as a subadmin of the site.
 
+*Multistore admin* can put a limit on a number of stores of a certain store type
+allowed to create by *Multistore owner* on the store type edit page. This limit
+could be overriden for an individual store owner on a store edit page. Also, you
+may change these values programmatically:
+
+```
+/** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
+$storage = \Drupal::entityManager()->getStorage('commerce_store');
+/** @var \Drupal\commerce_store\Entity\StoreTypeInterface $store_type */
+$limit = $storage->getStoreLimit($store_type->id());
+$storage->setStoreLimit($store_type->id(), $limit * 2);
+```
+
+```
+/** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
+$storage = \Drupal::entityManager()->getStorage('commerce_store');
+/** @var \Drupal\commerce_store\Entity\StoreInterface $entity */
+$uid = $entity->getOwnerId();
+$value = $storage->getStoreLimit($entity->bundle(), $uid);
+$storage->setStoreLimit($entity->bundle(), $value - 1, $uid);
+```
+
 If a *Multistore owner* attempts to add a product without any store created then
 they will be presented with the same message as the site's admin:
 

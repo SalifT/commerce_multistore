@@ -5,6 +5,7 @@
  * Contains commerce_multistore.module.
  */
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\commerce_store\Entity\StoreInterface;
@@ -102,5 +103,73 @@ function commerce_multistore_local_tasks_alter(&$local_tasks) {
   if (isset($local_tasks['entity.commerce_store.edit_form'])) {
     $local_tasks['entity.commerce_store.edit_form']['base_route'] = 'entity.commerce_store.canonical';
     $local_tasks['entity.commerce_store.edit_form']['weight'] = 1;
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function commerce_multistore_form_commerce_store_type_form_alter(array &$form, FormStateInterface $form_state) {
+  /** @var \Drupal\commerce_store\Entity\StoreTypeInterface $store_type */
+  $store_type = $form_state->getFormObject()->getEntity();
+  $storage = \Drupal::entityManager()->getStorage('commerce_store');
+
+  $form['multistore_limit'] = [
+    '#type' => 'number',
+    '#step' => 1,
+    '#min' => 0,
+    '#weight' =>  1,
+    '#title' => t('The maximum stores allowed'),
+    '#description' => t('Limit the number of stores of this type allowed to create by one user. Once a store is created this number could be overriden on a store edit form for each store owner individually. Leave 0 for unlimited number allowed.'),
+    '#default_value' => $storage->getStoreLimit($store_type->id()) ?: 0,
+  ];
+  $form['actions']['submit']['#submit'][] = 'commerce_multistore_commerce_store_type_form_submit';
+}
+
+/**
+ * Submit handler for the commerce_store_type form.
+ */
+function commerce_multistore_commerce_store_type_form_submit(array $form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
+  if ($form['multistore_limit']['#default_value'] == $values['multistore_limit']) {
+    return;
+  }
+  /** @var \Drupal\commerce_store\Entity\StoreTypeInterface $store_type */
+  $store_type = $form_state->getFormObject()->getEntity();
+  $storage = \Drupal::entityManager()->getStorage('commerce_store');
+  $storage->setStoreLimit($store_type->id(), $values['multistore_limit']);
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function commerce_multistore_entity_delete(EntityInterface $entity) {
+  if (!($entity instanceof StoreInterface)) {
+    return;
+  }
+
+  $store_type = $entity->bundle();
+  $uid = $entity->getOwnerId();
+  $config = \Drupal::configFactory()->getEditable("commerce_store.settings");
+  if ($config->get("commerce_multistore.owners.{$uid}.{$store_type}") !== NULL) {
+    $config->clear("commerce_multistore.owners.{$uid}.{$store_type}");
+    $config->save();
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ */
+function commerce_multistore_commerce_store_type_delete(EntityInterface $entity) {
+  if ($store_type = $entity->id()) {
+    $config = \Drupal::configFactory()->getEditable("commerce_store.settings");
+    $config->clear("commerce_multistore.stores.{$store_type}");
+    $owners = $config->get("commerce_multistore.owners") ?: [];
+    foreach ($owners as $uid => $value) {
+      if ($config->get("commerce_multistore.owners.{$uid}.{$store_type}") !== NULL) {
+        $config->clear("commerce_multistore.owners.{$uid}.{$store_type}");
+      }
+    }
+    $config->save();
   }
 }
