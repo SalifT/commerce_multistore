@@ -95,23 +95,22 @@ The module implements different default store model. Each regular store owner
 has their own default store in the set of stores belonging to them. At the same
 time the currently existing on the Drupal Commerce module default store is
 dimmed as the global default store. So, there might be infinite number of
-default stores on a site. Just one rule to remember: being logged as admin can
-change the global default store. To change an owner's default store you should
-be logged in as this owner. Again, in the context of a store owner the default
-store will always be resolved to their own default store, not the global one.
+default stores on a site. Just one rule to remember: in the context of a store
+owner the default store will always be resolved to their own default store, in
+the context of admin to the global one.
 
-Though not being able to change an owner's default store an admin can overview
-their default stores and the global default store on the [admin/commerce/config/stores](#)
-page. Also, there you'll find *Mark as default store* VBO action to change the
-global default store. Owners can overview their default store on the [user/ID/stores](#)
-page. Also, there is a link on a non-default store form page leading to the
-current owner's or a global default store in the case when the form is viewed by
-admin.
+Admin can administer global default store and owners default stores on the
+[admin/commerce/config/stores](#) page. There is *Mark as default store* VBO
+action which being used by admin will change global default store and *Mark as
+owner default store* action which change an owner default store. Owners can
+administer their default store on the [user/ID/stores](#) page. Also, there is a
+link on a non-default store form page leading to the current owner's or a global
+default store in the case when the form is viewed by admin.
 
 The purpose of a default store is explained for an owner in the description of
 the appropriate field on a store form. The possible use case of an owner's
 default store for developers might be seen in the
-**MultistoreProductDefaultStoreResolver.php** file. When a product is viewed
+**[MultistoreProductDefaultStoreResolver.php](https://github.com/drugan/commerce_multistore/blob/master/src/Resolver/MultistoreProductDefaultStoreResolver.php#L47)** file. When a product is viewed
 then the default store is always resolved to a product creator's store.
 Remember, with the current module products can be created and added only to
 stores owned by this product creator. The filtering of an owner's stores happens

@@ -48,12 +48,9 @@ class MultistoreProductDefaultStoreResolver implements StoreResolverInterface {
     $product = $this->routeMatch->getParameter('commerce_product');
     if ($product instanceof ProductInterface) {
       $storage = $this->entityManager->getStorage('commerce_store');
-      // The default store specific for this particular product owner. If the
-      // owner does not have any own store then an admin's global default store
-      // is returned. To return all the stores belonging to the owner, do this:
+      // The default store specific for this particular product owner. To return
+      // all the stores belonging to the owner, do this:
       // $stores = $storage->loadMultiple(NULL, $product->getOwner());
-      // Note that if the product owner has no one own store then the method
-      // above will return all stores existing on the site.
       return $storage->loadDefault($product->getOwner());
     }
 

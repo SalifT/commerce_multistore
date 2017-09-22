@@ -19,19 +19,19 @@ class MultistoreMarkAsDefault extends ActionBase {
   /**
    * {@inheritdoc}
    */
-  public function execute($entity = NULL) {
-    /** @var \Drupal\commerce_store\Entity\StoreInterface $entity */
+  public function execute($store = NULL) {
+    /** @var \Drupal\commerce_store\Entity\StoreInterface $store */
     /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
     $storage = \Drupal::entityTypeManager()->getStorage('commerce_store');
-    $storage->markAsDefault($entity);
+    $storage->markAsDefault($store);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
+  public function access($store, AccountInterface $account = NULL, $return_as_object = FALSE) {
     /** @var \Drupal\commerce_store\Entity\StoreInterface $object */
-    $result = $object->access('update', $account, TRUE);
+    $result = $store->access('update', $account, TRUE);
 
     return $return_as_object ? $result : $result->isAllowed();
   }

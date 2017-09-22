@@ -132,7 +132,7 @@ class MultistoreStorage extends StoreStorage {
    * {@inheritdoc}
    */
   public function getStoreLimit($store_type, $uid = NULL) {
-    $config = \Drupal::configFactory()->get('commerce_store.settings');
+    $config = $this->configFactory->get('commerce_store.settings');
     $limit = $config->get("commerce_multistore.stores.{$store_type}.limit");
     if ($uid) {
       $limit = [
@@ -154,7 +154,7 @@ class MultistoreStorage extends StoreStorage {
       // If store_type is empty then configuration on all types will be cleared.
       $store_type = isset($store_type['store_type']) ? $store_type['store_type'] : NULL;
     }
-    $config = \Drupal::configFactory()->getEditable("commerce_store.settings");
+    $config = $this->configFactory->getEditable("commerce_store.settings");
 
     if ($store_type && $uid) {
       if ($config->get("commerce_multistore.owners.{$uid}.stores.{$store_type}{$limit}") !== NULL) {

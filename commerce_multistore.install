@@ -93,6 +93,11 @@ function commerce_multistore_uninstall() {
     $action->delete();
   }
 
+  $action = $config->getEditable('system.action.commerce_multistore_mark_as_owner_default');
+  if ($action) {
+    $action->delete();
+  }
+
   if (\Drupal::moduleHandler()->moduleExists('views')) {
 
     $view = $config->getEditable('views.view.commerce_multistore_administer_stores');
