@@ -21,9 +21,9 @@ class MultistoreMarkAsDefault extends ActionBase {
    */
   public function execute($entity = NULL) {
     /** @var \Drupal\commerce_store\Entity\StoreInterface $entity */
-    /** @var \Drupal\commerce_multistore\StoreStorageInterface $store_storage */
-    $store_storage = \Drupal::entityTypeManager()->getStorage('commerce_store');
-    $store_storage->markAsDefault($entity);
+    /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
+    $storage = \Drupal::entityTypeManager()->getStorage('commerce_store');
+    $storage->markAsDefault($entity);
   }
 
   /**

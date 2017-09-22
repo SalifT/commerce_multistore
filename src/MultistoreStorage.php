@@ -150,15 +150,15 @@ class MultistoreStorage extends StoreStorage {
    */
   public function getStoreLimit($store_type, $uid = NULL) {
     $config = \Drupal::configFactory()->get('commerce_store.settings');
-    $value = $config->get("commerce_multistore.stores.{$store_type}.limit");
+    $limit = $config->get("commerce_multistore.stores.{$store_type}.limit");
     if ($uid) {
-      $value = [
-        $store_type => $value,
+      $limit = [
+        $store_type => $limit,
         $uid => $config->get("commerce_multistore.owners.{$uid}.{$store_type}.limit"),
       ];
     }
 
-    return $value;
+    return $limit;
   }
 
 }

@@ -130,14 +130,14 @@ function commerce_multistore_form_commerce_store_type_form_alter(array &$form, F
  * Submit handler for the commerce_store_type form.
  */
 function commerce_multistore_commerce_store_type_form_submit(array $form, FormStateInterface $form_state) {
-  $values = $form_state->getValues();
-  if ($form['multistore_limit']['#default_value'] == $values['multistore_limit']) {
+  $limit = $form_state->getValues()['multistore_limit'];
+  if ($limit == $form['multistore_limit']['#default_value']) {
     return;
   }
   /** @var \Drupal\commerce_store\Entity\StoreTypeInterface $store_type */
   $store_type = $form_state->getFormObject()->getEntity();
   $storage = \Drupal::entityManager()->getStorage('commerce_store');
-  $storage->setStoreLimit($store_type->id(), $values['multistore_limit']);
+  $storage->setStoreLimit($store_type->id(), $limit);
 }
 
 /**
