@@ -31,8 +31,7 @@ class MultistoreMarkAsDefault extends ActionBase {
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     /** @var \Drupal\commerce_store\Entity\StoreInterface $object */
-    $result = $object->access('update', $account, TRUE)
-      ->andIf($object->access('edit', $account, TRUE));
+    $result = $object->access('update', $account, TRUE);
 
     return $return_as_object ? $result : $result->isAllowed();
   }
