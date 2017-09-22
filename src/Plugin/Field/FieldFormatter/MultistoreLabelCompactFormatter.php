@@ -142,7 +142,7 @@ class MultistoreLabelCompactFormatter extends EntityReferenceLabelFormatter {
     }
 
     $i = $i - 1;
-    $d = $delta + 1;
+    $d = isset($delta) ? $delta + 1 : 1;
     $count = $d == $i ? $i : $this->t('@i out of @d', ['@i' => $i, '@d' => $d]);
     // Allow usage of special characters as the widget title and simple inline
     // list items separator.
