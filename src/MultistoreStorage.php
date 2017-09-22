@@ -148,18 +148,15 @@ class MultistoreStorage extends StoreStorage {
    * {@inheritdoc}
    */
   public function clearStoreLimit($store_type = NULL, $uid = NULL) {
-    if (!$store_type) {
-      return;
-    }
     $limit = '.limit';
     if ($delete = isset($store_type['delete'])) {
       $limit = '';
       // If store_type is empty then configuration on all types will be cleared.
-      $store_type = isset($store_type['store_type']) ? $store_type['store_type'] : '';
+      $store_type = isset($store_type['store_type']) ? $store_type['store_type'] : NULL;
     }
     $config = \Drupal::configFactory()->getEditable("commerce_store.settings");
 
-    if ($store_type && $uid && !$delete) {
+    if ($store_type && $uid) {
       if ($config->get("commerce_multistore.owners.{$uid}.stores.{$store_type}{$limit}") !== NULL) {
         $save = $config->clear("commerce_multistore.owners.{$uid}.stores.{$store_type}{$limit}");
       }
@@ -169,16 +166,23 @@ class MultistoreStorage extends StoreStorage {
         $save = $config->clear("commerce_multistore.stores.{$store_type}{$limit}");
       }
     }
+    else if ($delete && $uid) {
+      // Clear the requested uid from configuration altogether.
+      if ($config->get("commerce_multistore.owners.{$uid}") !== NULL) {
+        $save = $config->clear("commerce_multistore.owners.{$uid}");
+      }
+    }
     else {
       // Clear all limits.
-      // First, clear orphan store type which is not bundled with any store.
+      $stores = $this->loadMultiple() ?: [];
+      $owner_id = $uid;
+      $store_bundle = $store_type;
+      // First, clear store type that is not bundled with any store.
       if ($config->get("commerce_multistore.stores.{$store_type}{$limit}") !== NULL) {
         $save = $config->clear("commerce_multistore.stores.{$store_type}{$limit}");
       }
-      $stores = $this->loadMultiple() ?: [];
-      $owner_id = $uid;
       foreach ($stores as $store) {
-        $store_type = $store->bundle();
+        $store_type = $store_bundle ?: $store->bundle();
         $uid = $owner_id ?: $store->getOwnerId();
         if ($config->get("commerce_multistore.owners.{$uid}.stores.{$store_type}{$limit}") !== NULL) {
           $save = $config->clear("commerce_multistore.owners.{$uid}.stores.{$store_type}{$limit}");

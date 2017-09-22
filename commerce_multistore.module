@@ -7,6 +7,7 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\commerce_store\Entity\StoreInterface;
 use Drupal\commerce_multistore\MultistoreStorage;
@@ -145,16 +146,20 @@ function commerce_multistore_commerce_store_type_form_submit(array $form, FormSt
  * Implements hook_entity_delete().
  */
 function commerce_multistore_entity_delete(EntityInterface $entity) {
-  if (!($entity instanceof StoreInterface)) {
-    return;
+  if ($entity instanceof StoreInterface) {
+    $storage = \Drupal::entityManager()->getStorage('commerce_store');
+    $store_type = [
+      'delete' => TRUE,
+      'store_type' => $entity->bundle(),
+    ];
+    $storage->clearStoreLimit($store_type, $entity->getOwnerId());
   }
-
-  $store_type = $entity->bundle();
-  $uid = $entity->getOwnerId();
-  $config = \Drupal::configFactory()->getEditable("commerce_store.settings");
-  if ($config->get("commerce_multistore.owners.{$uid}.stores.{$store_type}") !== NULL) {
-    $config->clear("commerce_multistore.owners.{$uid}.stores.{$store_type}");
-    $config->save();
+  else if ($entity instanceof AccountInterface) {
+    $storage = \Drupal::entityManager()->getStorage('commerce_store');
+    $store_type = [
+      'delete' => TRUE,
+    ];
+    $storage->clearStoreLimit($store_type, $entity->id());
   }
 }
 
@@ -163,14 +168,11 @@ function commerce_multistore_entity_delete(EntityInterface $entity) {
  */
 function commerce_multistore_commerce_store_type_delete(EntityInterface $entity) {
   if ($store_type = $entity->id()) {
-    $config = \Drupal::configFactory()->getEditable("commerce_store.settings");
-    $config->clear("commerce_multistore.stores.{$store_type}");
-    $owners = $config->get("commerce_multistore.owners") ?: [];
-    foreach ($owners as $uid => $value) {
-      if ($config->get("commerce_multistore.owners.{$uid}.stores.{$store_type}") !== NULL) {
-        $config->clear("commerce_multistore.owners.{$uid}.stores.{$store_type}");
-      }
-    }
-    $config->save();
+    $storage = \Drupal::entityManager()->getStorage('commerce_store');
+    $store_type = [
+      'delete' => TRUE,
+      'store_type' => $store_type,
+    ];
+    $storage->clearStoreLimit($store_type);
   }
 }

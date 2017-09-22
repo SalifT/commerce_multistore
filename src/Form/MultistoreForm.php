@@ -76,7 +76,7 @@ class MultistoreForm extends StoreForm {
     parent::save($form, $form_state);
 
     $limit = $form_state->getValue('multistore_limit');
-    if ($limit != $form['multistore_limit']['#default_value']) {
+    if (isset($form['multistore_limit']) && $limit != $form['multistore_limit']['#default_value']) {
       /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
       $storage = $this->entityTypeManager->getStorage('commerce_store');
       $storage->setStoreLimit($this->entity->bundle(), $limit, $this->entity->getOwnerId());
