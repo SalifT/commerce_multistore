@@ -152,8 +152,8 @@ function commerce_multistore_entity_delete(EntityInterface $entity) {
   $store_type = $entity->bundle();
   $uid = $entity->getOwnerId();
   $config = \Drupal::configFactory()->getEditable("commerce_store.settings");
-  if ($config->get("commerce_multistore.owners.{$uid}.{$store_type}") !== NULL) {
-    $config->clear("commerce_multistore.owners.{$uid}.{$store_type}");
+  if ($config->get("commerce_multistore.owners.{$uid}.stores.{$store_type}") !== NULL) {
+    $config->clear("commerce_multistore.owners.{$uid}.stores.{$store_type}");
     $config->save();
   }
 }
@@ -167,8 +167,8 @@ function commerce_multistore_commerce_store_type_delete(EntityInterface $entity)
     $config->clear("commerce_multistore.stores.{$store_type}");
     $owners = $config->get("commerce_multistore.owners") ?: [];
     foreach ($owners as $uid => $value) {
-      if ($config->get("commerce_multistore.owners.{$uid}.{$store_type}") !== NULL) {
-        $config->clear("commerce_multistore.owners.{$uid}.{$store_type}");
+      if ($config->get("commerce_multistore.owners.{$uid}.stores.{$store_type}") !== NULL) {
+        $config->clear("commerce_multistore.owners.{$uid}.stores.{$store_type}");
       }
     }
     $config->save();
