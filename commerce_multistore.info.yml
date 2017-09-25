@@ -9,8 +9,11 @@ dependencies:
   - commerce_product
 config_devel:
   install:
+    - commerce_multistore.settings
     - user.role.commerce_multistore_owner
     - user.role.commerce_multistore_admin
     - system.action.commerce_multistore_mark_as_default
     - system.action.commerce_multistore_mark_as_owner_default
+    - field.formatter.settings.commerce_multistore_name
+    - field.formatter.settings.commerce_multistore_label_compact
     - views.view.commerce_multistore_administer_stores

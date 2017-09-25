@@ -789,7 +789,7 @@ display:
           type: commerce_multistore_label_compact
           settings:
             link: 1
-            summary: 'Click to expand the list'
+            summary: 'Total available'
             open: false
             list: ol
             separator: ', '

@@ -81,30 +81,22 @@ function commerce_multistore_uninstall() {
   }
 
   $config = \Drupal::configFactory();
+  $configurations = [
+    'commerce_multistore.settings',
+    'field.formatter.settings.commerce_multistore_name',
+    'field.formatter.settings.commerce_multistore_label_compact',
+    'system.action.commerce_multistore_mark_as_default',
+    'system.action.commerce_multistore_mark_as_owner_default',
+    'views.view.commerce_multistore_administer_stores',
+  ];
 
-  $store_settings = $config->getEditable('commerce_store.settings');
-  if ($store_settings->get('commerce_multistore')) {
-   $store_settings->clear('commerce_multistore');
-   $store_settings->save();
-  }
-
-  $action = $config->getEditable('system.action.commerce_multistore_mark_as_default');
-  if ($action) {
-    $action->delete();
-  }
-
-  $action = $config->getEditable('system.action.commerce_multistore_mark_as_owner_default');
-  if ($action) {
-    $action->delete();
+  foreach ($configurations as $name) {
+    if ($configuration = $config->getEditable($name)) {
+      $configuration->delete();
+    }
   }
 
   if (\Drupal::moduleHandler()->moduleExists('views')) {
-
-    $view = $config->getEditable('views.view.commerce_multistore_administer_stores');
-    if ($view && !$view->isNew()) {
-      $view->delete();
-    }
-
     $view = $config->getEditable('views.view.commerce_stores');
     if ($view) {
       $view->set('status', TRUE);

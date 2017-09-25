@@ -60,7 +60,7 @@ class MultistoreLabelCompactFormatter extends EntityReferenceLabelFormatter {
       '#options' => [
         'ul' => $this->t('Unordered list'),
         'ol' => $this->t('Ordered list'),
-        'simple' => $this->t('Simple separator'),
+        'simple' => $this->t('Separated by a string inline list'),
       ],
       '#default_value' => $list,
     ];

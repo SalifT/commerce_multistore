@@ -23,6 +23,13 @@ class MultistoreNameFormatter extends StringFormatter {
   /**
    * {@inheritdoc}
    */
+  public static function defaultSettings() {
+    return parent::defaultSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = parent::viewElements($items, $langcode);
     $labels = [];
@@ -32,6 +39,7 @@ class MultistoreNameFormatter extends StringFormatter {
       $default_store = $config->get('default_store');
       $global = $this->t('Global default store');
       $owner = $this->t('Owner default store');
+      $config = \Drupal::configFactory()->get('commerce_multistore.settings');
 
       foreach ($items as $delta => $item) {
         $attributes = [];
@@ -42,7 +50,7 @@ class MultistoreNameFormatter extends StringFormatter {
           $attributes['global'] = $global;
         }
         $uid = $item->getEntity()->getOwnerId();
-        if ($config->get("commerce_multistore.owners.{$uid}.default_store") == $uuid['value']) {
+        if ($config->get("owners.{$uid}.default_store") == $uuid['value']) {
           $attributes['owner'] = $owner;
         }
 

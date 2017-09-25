@@ -16,12 +16,13 @@ class MultistoreStorage extends StoreStorage {
    */
   public function loadDefault(AccountInterface $user = NULL) {
     $default = NULL;
-    $config = $this->configFactory->get('commerce_store.settings');
     if ($uid = $this->getCurrentUserId($user)) {
-      $uuid = $config->get("commerce_multistore.owners.{$uid}.default_store");
+      $config = $this->configFactory->get('commerce_multistore.settings');
+      $uuid = $config->get("owners.{$uid}.default_store");
       $result = parent::getQuery()->condition('uid', $uid)->execute();
     }
     else {
+      $config = $this->configFactory->get('commerce_store.settings');
       $uuid = $config->get('default_store');
       $result = parent::getQuery()->execute();
     }
@@ -97,17 +98,18 @@ class MultistoreStorage extends StoreStorage {
    */
   public function markAsDefault(StoreInterface $store) {
     $uid = $this->getCurrentUserId();
-    $config = $this->configFactory->getEditable('commerce_store.settings');
     // When the current user is admin the global default store is saved.
     if ($uid === FALSE) {
+      $config = $this->configFactory->getEditable('commerce_store.settings');
       if ($config->get('default_store') != $store->uuid()) {
         $config->set('default_store', $store->uuid());
         $config->save();
       }
     }
     else if ($uid) {
-      if ($config->get("commerce_multistore.owners.{$uid}.default_store") != $store->uuid()) {
-        $config->set("commerce_multistore.owners.{$uid}.default_store", $store->uuid());
+      $config = $this->configFactory->getEditable('commerce_multistore.settings');
+      if ($config->get("owners.{$uid}.default_store") != $store->uuid()) {
+        $config->set("owners.{$uid}.default_store", $store->uuid());
         $config->save();
       }
     }
@@ -117,13 +119,13 @@ class MultistoreStorage extends StoreStorage {
    * {@inheritdoc}
    */
   public function setStoreLimit($store_type, $limit, $uid = NULL) {
-    $config = $this->configFactory->getEditable('commerce_store.settings');
+    $config = $this->configFactory->getEditable('commerce_multistore.settings');
     if ($store_type && $limit && $uid) {
-      $config->set("commerce_multistore.owners.{$uid}.stores.{$store_type}.limit", $limit);
+      $config->set("owners.{$uid}.store_types.{$store_type}.limit", $limit);
       $config->save();
     }
     else if ($store_type && $limit) {
-      $config->set("commerce_multistore.stores.{$store_type}.limit", $limit);
+      $config->set("store_types.{$store_type}.limit", $limit);
       $config->save();
     }
   }
@@ -131,13 +133,16 @@ class MultistoreStorage extends StoreStorage {
   /**
    * {@inheritdoc}
    */
-  public function getStoreLimit($store_type, $uid = NULL) {
-    $config = $this->configFactory->get('commerce_store.settings');
-    $limit = $config->get("commerce_multistore.stores.{$store_type}.limit");
+  public function getStoreLimit($store_type = NULL, $uid = NULL) {
+    $config = $this->configFactory->get('commerce_multistore.settings');
+    if (!$store_type) {
+      return $config->getRawData();
+    }
+    $limit = $config->get("store_types.{$store_type}.limit");
     if ($uid) {
       $limit = [
         $store_type => $limit,
-        $uid => $config->get("commerce_multistore.owners.{$uid}.stores.{$store_type}.limit"),
+        $uid => $config->get("owners.{$uid}.store_types.{$store_type}.limit"),
       ];
     }
 
@@ -154,22 +159,22 @@ class MultistoreStorage extends StoreStorage {
       // If store_type is empty then configuration on all types will be cleared.
       $store_type = isset($store_type['store_type']) ? $store_type['store_type'] : NULL;
     }
-    $config = $this->configFactory->getEditable("commerce_store.settings");
+    $config = $this->configFactory->getEditable("commerce_multistore.settings");
 
     if ($store_type && $uid) {
-      if ($config->get("commerce_multistore.owners.{$uid}.stores.{$store_type}{$limit}") !== NULL) {
-        $save = $config->clear("commerce_multistore.owners.{$uid}.stores.{$store_type}{$limit}");
+      if ($config->get("owners.{$uid}.store_types.{$store_type}{$limit}") !== NULL) {
+        $save = $config->clear("owners.{$uid}.store_types.{$store_type}{$limit}");
       }
     }
     else if ($store_type && !$delete) {
-      if ($config->get("commerce_multistore.stores.{$store_type}{$limit}") !== NULL) {
-        $save = $config->clear("commerce_multistore.stores.{$store_type}{$limit}");
+      if ($config->get("store_types.{$store_type}{$limit}") !== NULL) {
+        $save = $config->clear("store_types.{$store_type}{$limit}");
       }
     }
     else if ($delete && $uid) {
       // Clear the requested uid from configuration altogether.
-      if ($config->get("commerce_multistore.owners.{$uid}") !== NULL) {
-        $save = $config->clear("commerce_multistore.owners.{$uid}");
+      if ($config->get("owners.{$uid}") !== NULL) {
+        $save = $config->clear("owners.{$uid}");
       }
     }
     else {
@@ -178,17 +183,17 @@ class MultistoreStorage extends StoreStorage {
       $owner_id = $uid;
       $store_bundle = $store_type;
       // First, clear store type that is not bundled with any store.
-      if ($config->get("commerce_multistore.stores.{$store_type}{$limit}") !== NULL) {
-        $save = $config->clear("commerce_multistore.stores.{$store_type}{$limit}");
+      if ($config->get("store_types.{$store_type}{$limit}") !== NULL) {
+        $save = $config->clear("store_types.{$store_type}{$limit}");
       }
       foreach ($stores as $store) {
         $store_type = $store_bundle ?: $store->bundle();
         $uid = $owner_id ?: $store->getOwnerId();
-        if ($config->get("commerce_multistore.owners.{$uid}.stores.{$store_type}{$limit}") !== NULL) {
-          $save = $config->clear("commerce_multistore.owners.{$uid}.stores.{$store_type}{$limit}");
+        if ($config->get("owners.{$uid}.store_types.{$store_type}{$limit}") !== NULL) {
+          $save = $config->clear("owners.{$uid}.store_types.{$store_type}{$limit}");
         }
-        if ($config->get("commerce_multistore.stores.{$store_type}{$limit}") !== NULL) {
-          $save = $config->clear("commerce_multistore.stores.{$store_type}{$limit}");
+        if ($config->get("store_types.{$store_type}{$limit}") !== NULL) {
+          $save = $config->clear("store_types.{$store_type}{$limit}");
         }
       }
     }

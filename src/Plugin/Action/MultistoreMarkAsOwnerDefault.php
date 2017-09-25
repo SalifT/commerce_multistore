@@ -26,9 +26,9 @@ class MultistoreMarkAsOwnerDefault extends ActionBase {
     // Skip if the current store owner is admin, as they have global default
     // store and should assign it with its own action.
     if ($uid != $user->id()) {
-      $config = \Drupal::configFactory()->getEditable("commerce_store.settings");
-      if ($config->get("commerce_multistore.owners.{$uid}.default_store") != $store->uuid()) {
-        $config->set("commerce_multistore.owners.{$uid}.default_store", $store->uuid());
+      $config = \Drupal::configFactory()->getEditable("commerce_multistore.settings");
+      if ($config->get("owners.{$uid}.default_store") != $store->uuid()) {
+        $config->set("owners.{$uid}.default_store", $store->uuid());
         $config->save();
       }
     }

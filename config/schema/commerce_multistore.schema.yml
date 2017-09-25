@@ -1,6 +1,18 @@
-field.formatter.settings.commerce_multistore_label_compact:
-  type: mapping
+field.formatter.settings.commerce_multistore_name:
+  type: config_object
+  label: 'Multistore name formatter settings'
   mapping:
+    link_to_entity:
+      type: integer
+      label: 'Link to the entity'
+
+field.formatter.settings.commerce_multistore_label_compact:
+  type: config_object
+  label: 'Multistore label compact formatter settings'
+  mapping:
+    link:
+      type: integer
+      label: 'Link label to the referenced entity'
     summary:
       type: string
       label: 'Summary title'
@@ -8,19 +20,16 @@ field.formatter.settings.commerce_multistore_label_compact:
       type: boolean
       label: 'Whether to show details element expanded by default'
     list:
-      type: sequence
+      type: string
       label: 'List style'
-      sequence:
-        type: string
-        label: 'The HTML list''s element style'
     separator:
       type: string
       label: 'The separator for the simple inline list items'
     max:
-      type: int
+      type: string
       label: 'The maximum number of labels to display'
     offset:
-      type: int
+      type: string
       label: 'The offset where to start labels to display'
 
 action.configuration.commerce_multistore_mark_as_default:
@@ -30,3 +39,51 @@ action.configuration.commerce_multistore_mark_as_default:
 action.configuration.commerce_multistore_mark_as_owner_default:
   type: action_configuration_default
   label: 'Configuration for the Mark as owner default action'
+
+commerce_multistore_owners.*:
+  type: config_object
+  label: 'Owners'
+  mapping:
+    uid:
+      type: integer
+      label: 'Owner ID'
+
+
+commerce_multistore_owner:
+  type: commerce_multistore_owners.[%parent.uid]
+  label: 'Owner'
+  mapping:
+    default_store:
+      type: string
+      label: 'Owner default store UUID'
+    store_types:
+      type: commerce_multistore_type
+      label: 'Owner store type'
+
+
+commerce_multistore_types.*:
+  type: config_object
+  label: 'Store types'
+  mapping:
+    id:
+      type: string
+      label: 'Store type ID'
+
+commerce_multistore_type:
+  type: commerce_multistore_types.[%parent.id]
+  label: 'Store type'
+  mapping:
+    limit:
+      type: integer
+      label: 'Store type limit'
+
+commerce_multistore.settings:
+  type: config_object
+  label: 'Commerce Multitore settings'
+  mapping:
+    owners:
+      type: commerce_multistore_owner
+      label: 'Multistore owner settings'
+    store_types:
+      type: commerce_multistore_type
+      label: 'Multistore type settings'
