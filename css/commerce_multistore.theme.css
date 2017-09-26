@@ -3,43 +3,49 @@
  * Default theme implementation for Commerce Multistore components
  *
  */
-.multistore-name {
+
+
+.multistore {
+  --green: green;
+  --red: red;
+}
+
+.multistore__label {
   font-weight: bold;
   padding: 0 5px;
 }
 
-.global-default-store {
-  border-top: 2px solid red;
-  border-left: 2px solid red;
+.multistore__label--global-default {
+  border-top: 2px solid var(--red);
+  border-left: 2px solid var(--red);
 }
 
-.owner-default-store {
-  border-bottom: 2px solid green;
-  border-right: 2px solid green;
+.multistore__label--owner-default {
+  border-bottom: 2px solid var(--green);
+  border-right: 2px solid var(--green);
 }
 
-.multistore-global-label,
-.multistore-owner-label {
+.multistore--meta-data {
   font-size: 80%;
 }
 
-.multistore-owner-label {
-  float: right;
-}
-
-.multistore-global-label:before,
-.multistore-owner-label:after {
+.multistore__global-default:before,
+.multistore__owner-default:after {
   content: '√';
   font-size: 150%;
   font-weight: bold;
 }
 
-.multistore-global-label:before {
-  color: red;
+.multistore__global-default:before {
+  color: var(--red);
 }
 
-.multistore-owner-label:after {
-  color: green;
+.multistore__owner-default:after {
+  color: var(--green);
+}
+
+.multistore__owner-default {
+  float: right;
 }
 
 

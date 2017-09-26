@@ -120,11 +120,11 @@ class MultistoreStorage extends StoreStorage {
    */
   public function setStoreLimit($store_type, $limit, $uid = NULL) {
     $config = $this->configFactory->getEditable('commerce_multistore.settings');
-    if ($store_type && $limit && $uid) {
+    if ($store_type && $uid && is_numeric($limit)) {
       $config->set("owners.{$uid}.store_types.{$store_type}.limit", $limit);
       $config->save();
     }
-    else if ($store_type && $limit) {
+    else if ($store_type && is_numeric($limit)) {
       $config->set("store_types.{$store_type}.limit", $limit);
       $config->save();
     }

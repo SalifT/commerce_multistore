@@ -21,8 +21,11 @@ class MultistoreCurrencyAccessControlHandler extends EntityAccessControlHandler 
     $result = parent::checkAccess($entity, $operation, $account);
     if ($result->isNeutral() || !$result->isForbidden()) {
       if ($operation == 'view') {
+        if (!$allowed = $account->hasPermission($this->entityType->getAdminPermission())) {
+          $allowed = $account->hasPermission('view own commerce_store');
+        }
         // Allow store owner view currency label in views.
-        $result = AccessResult::allowedIf($account->hasPermission('view own commerce_store'));
+        $result = AccessResult::allowedIf($allowed);
       }
     }
 
