@@ -25,23 +25,34 @@
  * entity display.
  */
 #}
-<details class="label-compact-details" {{ attributes.open == "1" ? "open" : "" }}>
-  <summary class="label-compact-details-summary">{{ attributes.summary['#markup']|raw }}</summary>
-  {% if attributes.list != "simple" %}
-    <{{ attributes.list }} class="label-compact-list">
+{% if content_attributes[1]  %}
+  <details class="label-compact-details" {{ attributes.open == "1" ? "open" : "" }}>
+    <summary class="label-compact-details-summary">{{ attributes.summary['#markup']|raw }}</summary>
+    {% if attributes.list != "simple" %}
+      <{{ attributes.list }} class="label-compact-list">
+        {% for label in content_attributes %}
+          <li class="label-compact-list-item">
+            {{- label['#type'] == "link" ? link(label['#title'], label['#url']) : label['#plain_text']|striptags -}}
+          </li>
+        {% endfor %}
+      </{{ attributes.list }}>
+    {% else %}
+      {% set the_last = content_attributes|last %}
+      {% set str = attributes.separator['#markup'] %}
       {% for label in content_attributes %}
-        <li class="label-compact-list-item">
-          {{ label['#type'] == "link" ? link(label['#title'], label['#url']) : label['#plain_text'] }}
-        </li>
+        <span class="label-compact-inline-list-item">
+          {{ label['#type'] == "link" ? link(label['#title'], label['#url']) : label['#plain_text'] }}{{ label == the_last ? "" : str|raw }}
+        </span>
       {% endfor %}
-    </{{ attributes.list }}>
+    {% endif %}
+  </details>
+{% else %}
+  <div class="label-compact-list-item">
+  {% set label = content_attributes[0] %}
+  {% if label  %}
+    {{- label['#type'] == "link" ? link(label['#title'], label['#url']) : label['#plain_text']|striptags -}}
   {% else %}
-    {% set the_last = content_attributes|last %}
-    {% set str = attributes.separator['#markup'] %}
-    {% for label in content_attributes %}
-      <span class="label-compact-inline-list-item">
-        {{ label['#type'] == "link" ? link(label['#title'], label['#url']) : label['#plain_text'] }}{{ label == the_last ? "" : str|raw }}
-      </span>
-    {% endfor %}
+    {{- attributes.empty -}}
   {% endif %}
-</details>
+  </div>
+{% endif %}

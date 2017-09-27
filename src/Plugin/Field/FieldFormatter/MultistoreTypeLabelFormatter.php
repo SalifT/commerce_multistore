@@ -86,7 +86,7 @@ class MultistoreTypeLabelFormatter extends EntityReferenceLabelFormatter {
         }
         $used_stores = ', ' . $this->t('used: @used', ['@used' => $this->usedStores[$uid][$store_type]]);
         $global_limit = $store_type_limit ? $this->t('Global limit:') . " {$store_type_limit}" : $this->t('Unlimited');
-        $owner_limit = $this->t('Owner limit: @limit', ['@limit' => $owner_limit ?: $this->t('global (@global)', ['@global' => $store_type_limit])]);
+        $owner_limit = $this->t('Owner limit: @limit', ['@limit' => $owner_limit ?: $this->t('inherited')]);
         $owner_limit .= $used_stores;
       }
       else if (!$owner_is_admin && $is_limit) {

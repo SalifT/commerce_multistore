@@ -16,6 +16,35 @@ field.formatter.settings.commerce_multistore_label_compact:
     summary:
       type: string
       label: 'Summary title'
+    empty:
+      type: string
+      label: 'Empty list placeholder'
+    open:
+      type: boolean
+      label: 'Whether to show details element expanded by default'
+    list:
+      type: string
+      label: 'List style'
+    separator:
+      type: string
+      label: 'The separator for the simple inline list items'
+    max:
+      type: string
+      label: 'The maximum number of labels to display'
+    offset:
+      type: string
+      label: 'The offset where to start labels to display'
+
+field.formatter.settings.commerce_multistore_list_compact:
+  type: config_object
+  label: 'Multistore list options compact formatter settings'
+  mapping:
+    summary:
+      type: string
+      label: 'Summary title'
+    empty:
+      type: string
+      label: 'Empty list placeholder'
     open:
       type: boolean
       label: 'Whether to show details element expanded by default'

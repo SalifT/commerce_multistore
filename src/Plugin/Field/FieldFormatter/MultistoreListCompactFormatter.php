@@ -5,20 +5,22 @@ namespace Drupal\commerce_multistore\Plugin\Field\FieldFormatter;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceLabelFormatter;
+use Drupal\options\Plugin\Field\FieldFormatter\OptionsDefaultFormatter;
 
 /**
- * Plugin implementation of the 'commerce_multistore_label_compact' formatter.
+ * Plugin implementation of the 'commerce_multistore_list_compact' formatter.
  *
  * @FieldFormatter(
- *   id = "commerce_multistore_label_compact",
- *   label = @Translation("Label Compact"),
+ *   id = "commerce_multistore_list_compact",
+ *   label = @Translation("Compact options list"),
  *   field_types = {
- *     "entity_reference"
+ *     "list_integer",
+ *     "list_float",
+ *     "list_string",
  *   }
  * )
  */
-class MultistoreLabelCompactFormatter extends EntityReferenceLabelFormatter {
+class MultistoreListCompactFormatter extends OptionsDefaultFormatter {
 
   /**
    * {@inheritdoc}
@@ -117,7 +119,6 @@ class MultistoreLabelCompactFormatter extends EntityReferenceLabelFormatter {
     $settings = $this->getSettings();
     unset($settings['attributes'], $settings['content_attributes']);
     extract($settings);
-    $settings['link'] = $link == 1 ? t('Enabled') : $link;
     $settings['open'] = $open == 1 ? t('Yes') : $open;
     $settings['list'] = $list == 'ol' ? t('Ordered') : ($list == 'ul' ? t('Unordered') : t('Simple'));
 
@@ -145,6 +146,10 @@ class MultistoreLabelCompactFormatter extends EntityReferenceLabelFormatter {
         continue;
       }
       $i++;
+      $elements[$delta] = [
+        // Possible tags will be cleared in template with striptags twig filter.
+        '#plain_text' => $elements[$delta]['#markup'],
+      ];
     }
 
     $i = $i - 1;

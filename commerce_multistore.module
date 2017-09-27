@@ -131,7 +131,6 @@ function commerce_multistore_form_commerce_store_type_form_alter(array &$form, F
     '#step' => 1,
     '#min' => 0,
     '#weight' =>  1,
-    '#required' => TRUE,
     '#title' => t('The maximum stores'),
     '#description' => t('Limit the number of stores of this type allowed to create by one user. Once a store is created this number could be overriden on a store edit form for each store owner individually. Leave 0 for unlimited.'),
     '#default_value' => $storage->getStoreLimit($store_type->id()) ?: 0,
@@ -150,7 +149,7 @@ function commerce_multistore_commerce_store_type_form_submit(array $form, FormSt
   /** @var \Drupal\commerce_store\Entity\StoreTypeInterface $store_type */
   $store_type = $form_state->getFormObject()->getEntity();
   $storage = \Drupal::entityManager()->getStorage('commerce_store');
-  $storage->setStoreLimit($store_type->id(), $limit);
+  $storage->setStoreLimit($store_type->id(), $limit ?: 0);
 }
 
 /**

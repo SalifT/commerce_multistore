@@ -8,7 +8,6 @@ dependencies:
     - commerce_multistore
     - commerce_product
     - commerce_store
-    - options
     - system
     - user
 id: commerce_multistore_administer_stores
@@ -790,6 +789,7 @@ display:
           settings:
             link: 1
             summary: 'Total available'
+            empty: 'No variation'
             open: false
             list: ol
             separator: ', '
@@ -1477,6 +1477,8 @@ display:
         style: false
         row: false
         fields: false
+        filters: false
+        filter_groups: false
       row:
         type: fields
         options: {  }
@@ -1906,13 +1908,20 @@ display:
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
-          empty: 'All countries'
-          hide_empty: true
-          empty_zero: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: list_default
-          settings: {  }
+          type: commerce_multistore_list_compact
+          settings:
+            summary: Total
+            empty: 'All countries'
+            open: 0
+            list: ul
+            separator: ', '
+            max: '0'
+            offset: '0'
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -1970,13 +1979,20 @@ display:
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
-          empty: 'All countries'
-          hide_empty: true
-          empty_zero: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: list_default
-          settings: {  }
+          type: commerce_multistore_list_compact
+          settings:
+            summary: Total
+            empty: 'All countries'
+            open: 0
+            list: ul
+            separator: ', '
+            max: '0'
+            offset: '0'
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -2041,6 +2057,56 @@ display:
           destination: false
           entity_type: commerce_store
           plugin_id: entity_operations
+      filters:
+        type:
+          id: type
+          table: commerce_store_field_data
+          field: type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: in
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: type_op
+            label: Type
+            description: ''
+            use_operator: false
+            operator: type_op
+            identifier: filter_store_type
+            required: false
+            remember: true
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              seller: '0'
+              administrator: '0'
+              commerce_multistore_admin: '0'
+              commerce_multistore_owner: '0'
+            reduce: false
+            hide_single_bundle: true
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: commerce_store
+          entity_field: type
+          plugin_id: commerce_entity_bundle
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
     cache_metadata:
       contexts:
         - 'languages:language_content'
@@ -2588,8 +2654,15 @@ display:
           empty_zero: true
           hide_alter_empty: true
           click_sort_column: value
-          type: list_default
-          settings: {  }
+          type: commerce_multistore_list_compact
+          settings:
+            summary: Total
+            empty: 'All countries'
+            open: 0
+            list: ul
+            separator: ', '
+            max: '0'
+            offset: '0'
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -2652,8 +2725,15 @@ display:
           empty_zero: true
           hide_alter_empty: true
           click_sort_column: value
-          type: list_default
-          settings: {  }
+          type: commerce_multistore_list_compact
+          settings:
+            summary: Total
+            empty: 'All countries'
+            open: 0
+            list: ul
+            separator: ', '
+            max: '0'
+            offset: '0'
           group_column: value
           group_columns: {  }
           group_rows: true

@@ -46,11 +46,10 @@ class MultistoreForm extends StoreForm {
           '#type' => 'number',
           '#step' => 1,
           '#min' => 0,
-          '#required' => TRUE,
           '#weight' =>  $form['uid']['#weight'] + 1,
           '#title' => t('The maximum stores'),
-          '#description' => t('Override the number of stores of this type allowed to create by the current store owner. Leave 0 to apply the store type limit (@limit).', ['@limit' => $limit[$entity_type]]),
-          '#default_value' => $limit[$uid] ?: $limit[$entity_type],
+          '#description' => t('Override the number of stores of this type allowed to create by the current store owner. Leave 0 to inherit the store type limit (@limit).', ['@limit' => $limit[$entity_type]]),
+          '#default_value' => $limit[$uid] ?: 0,
         ];
       }
     }
@@ -79,7 +78,7 @@ class MultistoreForm extends StoreForm {
     if (isset($form['multistore_limit']) && $limit != $form['multistore_limit']['#default_value']) {
       /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
       $storage = $this->entityTypeManager->getStorage('commerce_store');
-      $storage->setStoreLimit($this->entity->bundle(), $limit, $this->entity->getOwnerId());
+      $storage->setStoreLimit($this->entity->bundle(), $limit ?: 0, $this->entity->getOwnerId());
     }
 
     // Redirect to the store/ID page.
