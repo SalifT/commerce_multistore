@@ -164,6 +164,12 @@ class MultistoreStorage extends StoreStorage {
     if ($store_type && $uid) {
       if ($config->get("owners.{$uid}.store_types.{$store_type}{$limit}") !== NULL) {
         $save = $config->clear("owners.{$uid}.store_types.{$store_type}{$limit}");
+        if ($config->get("owners.{$uid}.store_types") === []) {
+          $config->clear("owners.{$uid}.store_types");
+        }
+        if ($config->get("owners.{$uid}") === []) {
+          $config->clear("owners.{$uid}");
+        }
       }
     }
     else if ($store_type && !$delete) {

@@ -69,16 +69,43 @@ class MultistoreForm extends StoreForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
+    if (isset($form['multistore_limit'])) {
+      $uid = $form['uid']['widget']['0']['target_id']['#default_value']->id();
+      $multistore_limit = $form_state->getValue('multistore_limit');
+      $store_type = $this->entity->bundle();
+      /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
+      $storage = $this->entityTypeManager->getStorage('commerce_store');
+
+      // Owner is changed, so clear limits if they have only one store type.
+      if ($uid != $form_state->getValue('uid')[0]['target_id']) {
+        $stores = count($storage->getQuery()
+          ->condition('uid', $uid)
+          ->condition('type', $store_type)->execute());
+        $store_type = [
+          'delete' => TRUE,
+          'store_type' => $store_type,
+        ];
+      }
+      else if ($multistore_limit != $form['multistore_limit']['#default_value']) {
+        $limit = $multistore_limit;
+      }
+    }
+
     if ($this->entity->isNew()) {
       $this->entity->enforceIsNew(FALSE);
     }
     parent::save($form, $form_state);
 
-    $limit = $form_state->getValue('multistore_limit');
-    if (isset($form['multistore_limit']) && $limit != $form['multistore_limit']['#default_value']) {
-      /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
-      $storage = $this->entityTypeManager->getStorage('commerce_store');
-      $storage->setStoreLimit($this->entity->bundle(), $limit ?: 0, $this->entity->getOwnerId());
+    if (isset($stores) && $stores == 1) {
+      // See if there is other stores left, otherwise clear user altogether.
+      $stores = count($storage->getQuery()->condition('uid', $uid)->execute());
+      if (!$stores) {
+        unset($store_type['store_type']);
+      }
+      $storage->clearStoreLimit($store_type, $uid);
+    }
+    else if (isset($limit)) {
+      $storage->setStoreLimit($store_type, $limit ?: 0, $this->entity->getOwnerId());
     }
 
     // Redirect to the store/ID page.
