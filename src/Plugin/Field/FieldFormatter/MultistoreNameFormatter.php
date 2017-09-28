@@ -42,16 +42,16 @@ class MultistoreNameFormatter extends StringFormatter {
       $config = \Drupal::configFactory()->get('commerce_multistore.settings');
 
       foreach ($items as $delta => $item) {
-        $attributes = [];
+        $settings = [];
 
         $uuid = $item->getEntity()->uuid->getValue();
         $uuid = reset($uuid);
         if ($uuid['value'] == $default_store) {
-          $attributes['global'] = $global;
+          $settings['global'] = $global;
         }
         $uid = $item->getEntity()->getOwnerId();
         if ($config->get("owners.{$uid}.default_store") == $uuid['value']) {
-          $attributes['owner'] = $owner;
+          $settings['owner'] = $owner;
         }
 
         $content['type'] = $elements[$delta]['#type'];
@@ -65,8 +65,8 @@ class MultistoreNameFormatter extends StringFormatter {
 
         $labels[$delta] = [
           '#theme' => 'commerce_multistore_name',
-          '#attributes' => $attributes,
-          '#content_attributes' => $content,
+          '#settings' => $settings,
+          '#content' => $content,
           '#attached' => [
             'library' => ['commerce_multistore/multistore_default'],
           ],

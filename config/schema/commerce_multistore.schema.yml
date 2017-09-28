@@ -39,6 +39,10 @@ field.formatter.settings.commerce_multistore_list_compact:
   type: config_object
   label: 'Multistore list options compact formatter settings'
   mapping:
+  mapping:
+    link:
+      type: integer
+      label: 'Link label to the referenced entity'
     summary:
       type: string
       label: 'Summary title'

@@ -1804,7 +1804,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Taxes incl.'
+          label: Taxes
           exclude: false
           alter:
             alter_text: false
@@ -1848,9 +1848,9 @@ display:
           click_sort_column: value
           type: boolean
           settings:
-            format: yes-no
-            format_custom_true: ''
-            format_custom_false: ''
+            format: custom
+            format_custom_true: included
+            format_custom_false: excluded
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -1871,7 +1871,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Billing countries'
+          label: 'Billing in'
           exclude: false
           alter:
             alter_text: false
@@ -1917,7 +1917,7 @@ display:
           settings:
             summary: Total
             empty: 'All countries'
-            open: 0
+            open: false
             list: ul
             separator: ', '
             max: '0'
@@ -1942,7 +1942,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Tax registrations'
+          label: 'Taxes in'
           exclude: false
           alter:
             alter_text: false
@@ -1988,7 +1988,7 @@ display:
           settings:
             summary: Total
             empty: 'All countries'
-            open: 0
+            open: false
             list: ul
             separator: ', '
             max: '0'
@@ -2481,7 +2481,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Currency
+          label: Curr
           exclude: false
           alter:
             alter_text: false
@@ -2545,7 +2545,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Taxes incl.'
+          label: Taxes
           exclude: false
           alter:
             alter_text: false
@@ -2589,9 +2589,9 @@ display:
           click_sort_column: value
           type: boolean
           settings:
-            format: yes-no
-            format_custom_true: ''
-            format_custom_false: ''
+            format: custom
+            format_custom_true: included
+            format_custom_false: excluded
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -2612,7 +2612,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Billing countries'
+          label: 'Billing in'
           exclude: false
           alter:
             alter_text: false
@@ -2658,7 +2658,7 @@ display:
           settings:
             summary: Total
             empty: 'All countries'
-            open: 0
+            open: false
             list: ul
             separator: ', '
             max: '0'
@@ -2683,7 +2683,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Tax registrations'
+          label: 'Taxes in'
           exclude: false
           alter:
             alter_text: false
@@ -2729,7 +2729,7 @@ display:
           settings:
             summary: Total
             empty: 'All countries'
-            open: 0
+            open: false
             list: ul
             separator: ', '
             max: '0'

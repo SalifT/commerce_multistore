@@ -4,10 +4,10 @@
  * Theme override for a store name.
  *
  * Available variables:
- * - attributes: settings for the container.
+ * - settings: settings for the container.
  *   - global: The text label for a global default store.
  *   - owner: The text label for an owner's default store.
- * - content_attributes: The array of the following elements:
+ * - content: The array of the following elements:
  *   - type: The store name item type.
  *   - title: The name of a store.
  *   - url: The Url object for the store's name.
@@ -16,20 +16,20 @@
  * owner's default store.
  */
 #}
-{% set global_class = attributes.global ? ' multistore__label--global-default' : '' %}
-{% set owner_class = attributes.owner ? ' multistore__label--owner-default' : '' %}
+{% set global_class = settings.global ? ' multistore__label--global-default' : '' %}
+{% set owner_class = settings.owner ? ' multistore__label--owner-default' : '' %}
 <div class="multistore">
-  {% if attributes.global %}
+  {% if settings.global %}
   <span class="multistore__global-default multistore--meta-data">
-    {{ attributes.global }}
+    {{ settings.global }}
   </span>
   {% endif %}
   <div{{ attributes.setAttribute('class', 'multistore__label' ~ global_class ~ owner_class) }}>
-    {{ content_attributes.type == "link" ? link(content_attributes.title, content_attributes.url) : content_attributes.title }}
+    {{ content.type == "link" ? link(content.title, content.url) : content.title }}
   </div>
-  {% if attributes.owner %}
+  {% if settings.owner %}
   <span class="multistore__owner-default multistore--meta-data">
-    {{ attributes.owner }}
+    {{ settings.owner }}
   </span>
   {% endif %}
 </div>

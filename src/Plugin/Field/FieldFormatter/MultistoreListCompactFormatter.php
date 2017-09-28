@@ -152,25 +152,22 @@ class MultistoreListCompactFormatter extends OptionsDefaultFormatter {
       ];
     }
 
+    $settings['total'] = $d = isset($delta) ? $delta + 1 : 0;
     $i = $i - 1;
-    $d = isset($delta) ? $delta + 1 : 1;
     $count = $d == $i ? $i : $this->t('@i out of @d', ['@i' => $i, '@d' => $d]);
     // Allow usage of special characters as the widget title, empty list
     // placeholder and simple inline list items separator.
-    $settings['summary'] = [
-      '#markup' => Html::escape("{$summary} ({$count})"),
-    ];
-    $settings['separator'] = [
-      '#markup' => Html::escape($separator),
-    ];
-    $settings['empty'] = [
-      '#markup' => Html::escape($empty),
-    ];
+    $settings['summary'] = Html::escape("{$summary} ({$count})");
+    $settings['separator'] = Html::escape($separator);
+    $settings['empty'] = Html::escape($empty);
 
     $labels[] = [
-      '#theme' => 'commerce_multistore_label_compact',
-      '#attributes' => $settings,
-      '#content_attributes' => $elements,
+      '#theme' => 'commerce_multistore_details_compact',
+      '#settings' => $settings,
+      '#content' => $elements,
+      '#attached' => [
+        'library' => ['commerce_multistore/multistore_default'],
+      ],
     ];
 
     return $labels;

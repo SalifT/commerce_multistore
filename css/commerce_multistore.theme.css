@@ -8,6 +8,7 @@
 .multistore {
   --green: green;
   --red: red;
+  --black: black;
 }
 
 .multistore__label {
@@ -29,18 +30,18 @@
   font-size: 80%;
 }
 
-.multistore__global-default:before,
-.multistore__owner-default:after {
+.multistore__global-default::before,
+.multistore__owner-default::after {
   content: '√';
   font-size: 150%;
   font-weight: bold;
 }
 
-.multistore__global-default:before {
+.multistore__global-default::before {
   color: var(--red);
 }
 
-.multistore__owner-default:after {
+.multistore__owner-default::after {
   color: var(--green);
 }
 
@@ -48,5 +49,28 @@
   float: right;
 }
 
+.multistore__compact-details .multistore__compact-list {
+  margin: .1em 1em;
+}
 
+.multistore__compact-summary {
+  min-height: 2.2em;
+}
 
+.multistore__compact-details[open] .multistore__compact-switcher::after,
+.multistore__compact-details .multistore__compact-switcher::after {
+  font-weight: bolder;
+  color: var(--black);
+  /* Should be synced with .multistore__compact-summary min-height value. */
+  font-size: 2em;
+  float: right;
+  line-height: initial;
+}
+
+.multistore__compact-details[open] .multistore__compact-switcher::after {
+  content: "ˆ";
+}
+
+.multistore__compact-details .multistore__compact-switcher::after {
+  content: "ˇ";
+}

@@ -48,7 +48,7 @@ class MultistoreForm extends StoreForm {
           '#min' => 0,
           '#weight' =>  $form['uid']['#weight'] + 1,
           '#title' => t('The maximum stores'),
-          '#description' => t('Override the number of stores of this type allowed to create by the current store owner. Leave 0 to inherit the store type limit (@limit).', ['@limit' => $limit[$entity_type]]),
+          '#description' => t('Override the number of stores of this type allowed to create by the current store owner. Leave 0 to inherit the store type limit (@limit).', ['@limit' => $limit[$entity_type] ?: $this->t('Unlimited')]),
           '#default_value' => $limit[$uid] ?: 0,
         ];
       }

@@ -86,7 +86,7 @@ class MultistoreTypeLabelFormatter extends EntityReferenceLabelFormatter {
         }
         $used_stores = ', ' . $this->t('used: @used', ['@used' => $this->usedStores[$uid][$store_type]]);
         $global_limit = $store_type_limit ? $this->t('Global limit:') . " {$store_type_limit}" : $this->t('Unlimited');
-        $owner_limit = $this->t('Owner limit: @limit', ['@limit' => $owner_limit ?: $this->t('inherited')]);
+        $owner_limit = $this->t('Owner limit: @limit', ['@limit' => $owner_limit ?: $this->t('inherit')]);
         $owner_limit .= $used_stores;
       }
       else if (!$owner_is_admin && $is_limit) {
@@ -99,13 +99,13 @@ class MultistoreTypeLabelFormatter extends EntityReferenceLabelFormatter {
       }
 
       foreach ($items as $delta => $item) {
-        $attributes = [];
+        $settings = [];
         if ($this->currentUserAdmin && !$owner_is_admin) {
-          $attributes['global'] = $global_limit;
-          $attributes['owner'] = $owner_limit;
+          $settings['global'] = $global_limit;
+          $settings['owner'] = $owner_limit;
         }
         else if (!$owner_is_admin && $is_limit) {
-          $attributes['owner'] = $your_limit;
+          $settings['owner'] = $your_limit;
         }
         $content['type'] = isset($elements[$delta]['#type']) ? $elements[$delta]['#type'] : 'plain_text';
         if ($content['type'] == 'link') {
@@ -122,8 +122,8 @@ class MultistoreTypeLabelFormatter extends EntityReferenceLabelFormatter {
         }
         $labels[$delta] = [
           '#theme' => 'commerce_multistore_type_label',
-          '#attributes' => $attributes,
-          '#content_attributes' => $content,
+          '#settings' => $settings,
+          '#content' => $content,
           '#attached' => [
             'library' => ['commerce_multistore/multistore_default'],
           ],
