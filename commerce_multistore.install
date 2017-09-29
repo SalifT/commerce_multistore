@@ -89,6 +89,11 @@ function commerce_multistore_uninstall() {
     'system.action.commerce_multistore_mark_as_default',
     'system.action.commerce_multistore_mark_as_owner_default',
     'system.action.commerce_multistore_increase_owner_limit_by_one',
+    'system.action.commerce_multistore_increase_store_limit_by_one',
+    'system.action.commerce_multistore_set_owner_limit_to_one',
+    'system.action.commerce_multistore_set_store_limit_to_one',
+    'system.action.commerce_multistore_clear_owner_store_limit',
+    'system.action.commerce_multistore_clear_store_type_limit',
     'views.view.commerce_multistore_administer_stores',
   ];
 

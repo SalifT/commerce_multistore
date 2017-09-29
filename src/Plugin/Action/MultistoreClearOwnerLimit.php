@@ -6,15 +6,15 @@ use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Session\AccountInterface;
 
 /**
- * Increases store type limit by one for an owner.
+ * Clears store type limit for an owner.
  *
  * @Action(
- *   id = "commerce_multistore_increase_owner_limit_by_one",
- *   label = @Translation("Increase owner store limit by one"),
+ *   id = "commerce_multistore_clear_owner_store_limit",
+ *   label = @Translation("Clear owner store type limit"),
  *   type = "commerce_store"
  * )
  */
-class MultistoreIncreaseOwnerLimitByOne extends ActionBase {
+class MultistoreClearOwnerLimit extends ActionBase {
 
   /**
    * {@inheritdoc}
@@ -28,19 +28,22 @@ class MultistoreIncreaseOwnerLimitByOne extends ActionBase {
 
     /** @var \Drupal\commerce_store\Entity\StoreInterface $store */
     foreach ($stores as $store) {
-      $admin = $store->getOwner()->hasPermission($store->getEntityType()->getAdminPermission());
-      $uid = $store->getOwnerId();
-      $store_type = $store->bundle();
-      // Skip if the current store owner is the current user (admin) or if the
-      // the limit is already increased diring this bulk operation.
-      if (!$admin && $uid != $cuid && !isset($limits[$uid][$store_type])) {
-        $limit = $storage->getStoreLimit($store_type, $uid);
-        $limits[$uid][$store_type] = $limit[$uid] + 1;
-        $storage->setStoreLimit($store_type, $limits[$uid][$store_type], $uid);
+      if (!isset($admin)) {
+        $admin = $user->hasPermission($store->getEntityType()->getAdminPermission());
       }
-      else if ($admin) {
+      $store_type = $store->bundle();
+      $uid = $store->getOwnerId();
+
+      if ($admin && $uid != $cuid && !isset($limits[$uid][$store_type])) {
+        $limits[$uid][$store_type] = [
+          'delete' => TRUE,
+          'store_type' => $store_type,
+        ];
+        $storage->clearStoreLimit($limits[$uid][$store_type], $uid);
+      }
+      else if ($uid == $cuid) {
         $name = $user->getUsername();
-        $msg = $this->t('The store type limit cannot be set for the %name because they have admin permission.', ['%name' => $name]);
+        $msg = $this->t("The store type limit cannot be cleared for the %name because they have admin permission and don't have any limits.", ['%name' => $name]);
         drupal_set_message($msg, 'warning', FALSE);
       }
     }

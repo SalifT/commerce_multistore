@@ -6,15 +6,15 @@ use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Session\AccountInterface;
 
 /**
- * Increases store type limit by one for an owner.
+ * Sets store type limit to one for an owner.
  *
  * @Action(
- *   id = "commerce_multistore_increase_owner_limit_by_one",
- *   label = @Translation("Increase owner store limit by one"),
+ *   id = "commerce_multistore_set_owner_limit_to_one",
+ *   label = @Translation("Set owner store type limit to one"),
  *   type = "commerce_store"
  * )
  */
-class MultistoreIncreaseOwnerLimitByOne extends ActionBase {
+class MultistoreSetOwnerLimitToOne extends ActionBase {
 
   /**
    * {@inheritdoc}
@@ -28,17 +28,17 @@ class MultistoreIncreaseOwnerLimitByOne extends ActionBase {
 
     /** @var \Drupal\commerce_store\Entity\StoreInterface $store */
     foreach ($stores as $store) {
-      $admin = $store->getOwner()->hasPermission($store->getEntityType()->getAdminPermission());
-      $uid = $store->getOwnerId();
+      if (!isset($admin)) {
+        $admin = $user->hasPermission($store->getEntityType()->getAdminPermission());
+      }
       $store_type = $store->bundle();
-      // Skip if the current store owner is the current user (admin) or if the
-      // the limit is already increased diring this bulk operation.
-      if (!$admin && $uid != $cuid && !isset($limits[$uid][$store_type])) {
-        $limit = $storage->getStoreLimit($store_type, $uid);
-        $limits[$uid][$store_type] = $limit[$uid] + 1;
+      $uid = $store->getOwnerId();
+
+      if ($admin && $uid != $cuid && !isset($limits[$uid][$store_type])) {
+        $limits[$uid][$store_type] = 1;
         $storage->setStoreLimit($store_type, $limits[$uid][$store_type], $uid);
       }
-      else if ($admin) {
+      else if ($uid == $cuid) {
         $name = $user->getUsername();
         $msg = $this->t('The store type limit cannot be set for the %name because they have admin permission.', ['%name' => $name]);
         drupal_set_message($msg, 'warning', FALSE);
