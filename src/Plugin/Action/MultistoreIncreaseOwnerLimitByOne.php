@@ -17,29 +17,40 @@ use Drupal\Core\Session\AccountInterface;
 class MultistoreIncreaseOwnerLimitByOne extends ActionBase {
 
   /**
-   * The store types limits.
-   *
-   * @var array
+   * {@inheritdoc}
    */
-  protected $limits = [];
+  public function executeMultiple(array $stores) {
+    /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
+    $storage = \Drupal::entityTypeManager()->getStorage('commerce_store');
+    $user = \Drupal::currentUser();
+    $cuid = $user->id();
+    $limits = [];
+
+    /** @var \Drupal\commerce_store\Entity\StoreInterface $store */
+    foreach ($stores as $store) {
+      $admin = $store->getOwner()->hasPermission($store->getEntityType()->getAdminPermission());
+      $uid = $store->getOwnerId();
+      $store_type = $store->bundle();
+      // Skip if the current store owner is the current user (admin) or if the
+      // the limit is already increased diring this bulk operation.
+      if (!$admin && $uid != $cuid && !isset($limits[$uid][$store_type])) {
+        $limit = $storage->getStoreLimit($store_type, $uid);
+        $limits[$uid][$store_type] = $limit[$uid] + 1;
+        $storage->setStoreLimit($store_type, $limits[$uid][$store_type], $uid);
+      }
+      else if ($admin) {
+        $name = $user->getUsername();
+        $msg = $this->t('The store type limit cannot be set for the %name because they have admin permission.', ['%name' => $name]);
+        drupal_set_message($msg, 'warning', FALSE);
+      }
+    }
+  }
 
   /**
    * {@inheritdoc}
    */
   public function execute($store = NULL) {
-    /** @var \Drupal\commerce_store\Entity\StoreInterface $store */
-    /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
-    $user = \Drupal::currentUser();
-    $uid = $store->getOwnerId();
-    $store_type = $store->bundle();
-    // Skip if the current store owner is the current user (admin) or if the
-    // the limit is already increased diring this bulk operation.
-    if (!isset($this->limits[$uid][$store_type]) && $uid != $user->id()) {
-      $storage = \Drupal::entityTypeManager()->getStorage('commerce_store');
-      $limit = $storage->getStoreLimit($store_type, $uid);
-      $this->limits[$uid][$store_type] = $limit[$uid] + 1;
-      $storage->setStoreLimit($store_type, $this->limits[$uid][$store_type], $uid);
-    }
+    // Do nothing.
   }
 
   /**

@@ -19,19 +19,44 @@ class MultistoreMarkAsOwnerDefault extends ActionBase {
   /**
    * {@inheritdoc}
    */
-  public function execute($store = NULL) {
-    /** @var \Drupal\commerce_store\Entity\StoreInterface $store */
-    $uid = $store->getOwnerId();
+  public function executeMultiple(array $stores) {
+    $config = \Drupal::configFactory()->getEditable("commerce_multistore.settings");
     $user = \Drupal::currentUser();
-    // Skip if the current store owner is admin, as they have global default
-    // store and should assign it with its own action.
-    if ($uid != $user->id()) {
-      $config = \Drupal::configFactory()->getEditable("commerce_multistore.settings");
-      if ($config->get("owners.{$uid}.default_store") != $store->uuid()) {
-        $config->set("owners.{$uid}.default_store", $store->uuid());
-        $config->save();
+    $cuid = $user->id();
+    $owners = [];
+
+    /** @var \Drupal\commerce_store\Entity\StoreInterface $store */
+    foreach ($stores as $store) {
+      $uid = $store->getOwnerId();
+      $uuid = $store->uuid();
+      if (!isset($admin)) {
+        $admin = $user->hasPermission($store->getEntityType()->getAdminPermission());
+      }
+
+      // Just one new default store for an owner. For perfomance reasons ignore
+      // an attempt to mark the last in a chain as an owner default store.
+      if (($owner = $uid != $cuid) && $admin && !isset($owners[$uid])) {
+        if ($config->get("owners.{$uid}.default_store") != $uuid) {
+          $save = $config->set("owners.{$uid}.default_store", $uuid);
+          $owners[$uid] = $uuid;
+        }
+      }
+      else if (!$owner && $admin) {
+        $name = $user->getUsername();
+        $msg = $this->t('The %name store cannot be set as owner default because they have admin permission and should use a global default store.', ['%name' => $name]);
+        drupal_set_message($msg, 'warning', FALSE);
       }
     }
+    if (isset($save)) {
+      $config->save();
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function execute($store = NULL) {
+    // Do nothing.
   }
 
   /**
