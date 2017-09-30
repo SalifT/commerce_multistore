@@ -27,9 +27,9 @@ class MultistoreMarkAsDefault extends ActionBase {
 
     foreach ($stores as $store) {
       if ($store->uuid() != $default_store->uuid()) {
-        // Only one store might be set as default, so for perfomance reasons
-        // ignore an attempt to mark the last in a chain as the default store.
         $storage->markAsDefault($store);
+        // Only one store might be set as default, so for perfomance reasons
+        // ignore an attempt to mark the default store in a chain.
         break;
       }
     }

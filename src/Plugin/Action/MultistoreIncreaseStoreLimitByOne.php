@@ -22,17 +22,13 @@ class MultistoreIncreaseStoreLimitByOne extends ActionBase {
   public function executeMultiple(array $stores) {
     /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
     $storage = \Drupal::entityTypeManager()->getStorage('commerce_store');
-    $user = \Drupal::currentUser();
     $limits = [];
 
     /** @var \Drupal\commerce_store\Entity\StoreInterface $store */
     foreach ($stores as $store) {
-      if (!isset($admin)) {
-        $admin = $user->hasPermission($store->getEntityType()->getAdminPermission());
-      }
       $store_type = $store->bundle();
-      // Skip if the current store type limit is already increased.
-      if ($admin && !isset($limits[$store_type])) {
+
+      if (!isset($limits[$store_type])) {
         $limit = $storage->getStoreLimit($store_type);
         $limits[$store_type] = $limit + 1;
         $storage->setStoreLimit($store_type, $limits[$store_type]);
@@ -52,8 +48,10 @@ class MultistoreIncreaseStoreLimitByOne extends ActionBase {
    */
   public function access($store, AccountInterface $account = NULL, $return_as_object = FALSE) {
     /** @var \Drupal\commerce_store\Entity\StoreInterface $store */
+    $admin = $account->hasPermission($store->getEntityType()->getAdminPermission());
     $result = $store->access('update', $account, TRUE)
-      ->andIf($store->access('edit', $account, TRUE));
+      ->andIf($store->access('edit', $account, TRUE))
+      ->allowedIf($admin);
 
     return $return_as_object ? $result : $result->isAllowed();
   }
