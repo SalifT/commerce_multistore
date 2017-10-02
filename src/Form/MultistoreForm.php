@@ -16,6 +16,7 @@ class MultistoreForm extends StoreForm {
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
     $user = $this->currentUser();
+    $admin = $this->entity->getEntityType()->getAdminPermission();
     /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage('commerce_store');
     $default_store = $storage->loadDefault();
@@ -35,10 +36,12 @@ class MultistoreForm extends StoreForm {
 
     $form['default']['#description'] = $this->t('The basic role of default store is to be the last in a chain of stores resolved for a particular commerce action. For example, you may have the same product added to different stores and sold in some countries with different taxes applied. So, if no one country condition is met then this product will be handled as if it belongs to the current default store.');
 
-    if ($user->hasPermission($this->entity->getEntityType()->getAdminPermission())) {
+    if ($user->hasPermission($admin)) {
       $form['default']['#title'] = $this->t('Global default store');
       $form['default']['#description'] .= ' ' . $this->t("As admin you may assign for this purpose your own store or any other owner's store. Note that disregarding of this setting each regular store owner have their own default store.");
-      if (($uid = $this->entity->getOwnerId()) && $uid != $user->id()) {
+      // Store limit cannot be set for an admin owner.
+      if (!$this->entity->getOwner()->hasPermission($admin)) {
+        $uid = $this->entity->getOwnerId();
         $entity_type = $this->entity->bundle();
         $limit = $storage->getStoreLimit($entity_type, $uid);
 
