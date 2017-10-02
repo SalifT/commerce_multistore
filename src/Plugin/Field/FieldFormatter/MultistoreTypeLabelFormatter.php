@@ -57,6 +57,13 @@ class MultistoreTypeLabelFormatter extends EntityReferenceLabelFormatter {
   /**
    * {@inheritdoc}
    */
+  public static function defaultSettings() {
+    return parent::defaultSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = parent::viewElements($items, $langcode);
     $labels = [];

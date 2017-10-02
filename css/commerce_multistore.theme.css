@@ -18,12 +18,10 @@
 
 .multistore__label--global-default {
   border-top: 2px solid var(--red);
-  border-left: 2px solid var(--red);
 }
 
 .multistore__label--owner-default {
   border-bottom: 2px solid var(--green);
-  border-right: 2px solid var(--green);
 }
 
 .multistore--meta-data {

@@ -84,6 +84,7 @@ function commerce_multistore_uninstall() {
   $configurations = [
     'commerce_multistore.settings',
     'field.formatter.settings.commerce_multistore_name',
+    'field.formatter.settings.commerce_multistore_type_label',
     'field.formatter.settings.commerce_multistore_label_compact',
     'field.formatter.settings.commerce_multistore_list_compact',
     'system.action.commerce_multistore_mark_as_default',

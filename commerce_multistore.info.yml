@@ -20,6 +20,7 @@ config_devel:
     - system.action.commerce_multistore_clear_owner_store_limit
     - system.action.commerce_multistore_clear_store_type_limit
     - field.formatter.settings.commerce_multistore_name
+    - field.formatter.settings.commerce_multistore_type_label
     - field.formatter.settings.commerce_multistore_label_compact
     - field.formatter.settings.commerce_multistore_list_compact
     - views.view.commerce_multistore_administer_stores
