@@ -60,7 +60,7 @@ class MultistoreEntityTypeInfo implements ContainerInjectionInterface {
     $operations = [];
     if ($entity instanceof StoreInterface && $this->currentUser->hasPermission('view own commerce_product')) {
       $url = $entity->toUrl();
-      $route = 'view.commerce_multistore_administer_stores.commerce_multistore_products_page';
+      $route = 'view.commerce_multistore_administer_stores.products_page';
       $route_parameters = $url->getRouteParameters();
       $options = $url->getOptions();
       $operations['multistore_products'] = [

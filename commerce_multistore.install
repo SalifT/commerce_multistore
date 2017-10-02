@@ -13,10 +13,18 @@ use Drupal\Core\Session\AccountInterface;
 function commerce_multistore_install() {
   // Disable default Stores view.
   if (\Drupal::moduleHandler()->moduleExists('views')) {
-    $view = \Drupal::configFactory()->getEditable('views.view.commerce_stores');
-    if ($view) {
-      $view->set('status', FALSE);
-      $view->save();
+    $config = \Drupal::configFactory();
+    $views = [
+      'views.view.commerce_stores',
+      'views.view.commerce_products'
+    ];
+
+    foreach ($views as $configuration) {
+      $view = $config->getEditable($configuration);
+      if ($view) {
+        $view->set('status', FALSE);
+        $view->save();
+      }
     }
   }
 
@@ -96,6 +104,7 @@ function commerce_multistore_uninstall() {
     'system.action.commerce_multistore_clear_owner_store_limit',
     'system.action.commerce_multistore_clear_store_type_limit',
     'views.view.commerce_multistore_administer_stores',
+    'views.view.commerce_multistore_administer_products',
   ];
 
   foreach ($configurations as $name) {
@@ -105,10 +114,17 @@ function commerce_multistore_uninstall() {
   }
 
   if (\Drupal::moduleHandler()->moduleExists('views')) {
-    $view = $config->getEditable('views.view.commerce_stores');
-    if ($view) {
-      $view->set('status', TRUE);
-      $view->save();
+    $views = [
+      'views.view.commerce_stores',
+      'views.view.commerce_products'
+    ];
+
+    foreach ($views as $configuration) {
+      $view = $config->getEditable($configuration);
+      if ($view) {
+        $view->set('status', TRUE);
+        $view->save();
+      }
     }
   }
 }

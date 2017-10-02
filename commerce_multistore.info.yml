@@ -24,5 +24,6 @@ config_devel:
     - field.formatter.settings.commerce_multistore_label_compact
     - field.formatter.settings.commerce_multistore_list_compact
     - views.view.commerce_multistore_administer_stores
+    - views.view.commerce_multistore_administer_products
   optional:
     - commerce_multistore.settings

@@ -2,10 +2,10 @@ view.commerce_multistore_stores.add_page:
   route_name: entity.commerce_store.add_page
   title: 'Add store'
   appears_on:
-    - view.commerce_multistore_administer_stores.commerce_multistore_user_stores_page
+    - view.commerce_multistore_administer_stores.user_stores_page
 
 view.commerce_multistore_store_products.add_page:
   route_name: entity.commerce_product.add_page
   title: 'Add product'
   appears_on:
-    - view.commerce_multistore_administer_stores.commerce_multistore_products_page
+    - view.commerce_multistore_administer_stores.products_page
