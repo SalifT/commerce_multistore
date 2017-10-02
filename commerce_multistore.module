@@ -4,7 +4,6 @@
  * @file
  * Contains commerce_multistore.module.
  */
-
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -12,6 +11,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\commerce_store\Entity\StoreInterface;
 use Drupal\commerce_multistore\MultistoreStorage;
 use Drupal\commerce_multistore\Form\MultistoreForm;
+use Drupal\commerce_multistore\MultistoreEntityTypeInfo;
 use Drupal\commerce_multistore\Form\MultistoreProductForm;
 use Drupal\commerce_multistore\MultistoreAccessControlHandler;
 use Drupal\commerce_multistore\MultistoreTypeAccessControlHandler;
@@ -173,5 +173,16 @@ function commerce_multistore_commerce_store_type_delete(EntityInterface $entity)
       'store_type' => $store_type,
     ];
     $storage->clearStoreLimit($store_type);
+  }
+}
+
+/**
+ * Implements hook_entity_operation().
+ */
+function commerce_multistore_entity_operation(EntityInterface $entity) {
+  if ($entity instanceof StoreInterface) {
+    return \Drupal::service('class_resolver')
+      ->getInstanceFromDefinition(MultistoreEntityTypeInfo::class)
+      ->entityOperation($entity);
   }
 }
