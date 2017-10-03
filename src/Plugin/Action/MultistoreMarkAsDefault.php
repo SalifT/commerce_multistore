@@ -23,10 +23,11 @@ class MultistoreMarkAsDefault extends ActionBase {
     /** @var \Drupal\commerce_store\Entity\StoreInterface $store */
     /** @var \Drupal\commerce_multistore\StoreStorageInterface $storage */
     $storage = \Drupal::entityTypeManager()->getStorage('commerce_store');
-    $default_store = $storage->loadDefault();
+    $single = count($stores) == 1;
+    $default_store = $single ? reset($stores) : $storage->loadDefault();
 
     foreach ($stores as $store) {
-      if ($store->uuid() != $default_store->uuid()) {
+      if ($single || $store->uuid() != $default_store->uuid()) {
         $storage->markAsDefault($store);
         // Only one store might be set as default, so for perfomance reasons
         // ignore an attempt to mark the default store in a chain.

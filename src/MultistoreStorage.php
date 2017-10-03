@@ -19,21 +19,26 @@ class MultistoreStorage extends StoreStorage {
     if ($uid = $this->getCurrentUserId($user)) {
       $config = $this->configFactory->get('commerce_multistore.settings');
       $uuid = $config->get("owners.{$uid}.default_store");
-      $result = parent::getQuery()->condition('uid', $uid)->execute();
+      $ids = parent::getQuery()->condition('uid', $uid)->execute();
     }
     else {
       $config = $this->configFactory->get('commerce_store.settings');
       $uuid = $config->get('default_store');
-      $result = parent::getQuery()->execute();
+      $ids = parent::getQuery()->execute();
     }
 
-    if ($result) {
-      $stores = parent::loadMultiple($result);
-      foreach ($stores as $store) {
-        if ($uuid && $store->uuid() == $uuid) {
-          $default = $store;
-          break;
+    if ($ids) {
+      $stores = parent::loadMultiple($ids);
+      if ($uuid) {
+        foreach ($stores as $store) {
+          if ($store->uuid() == $uuid) {
+            $default = $store;
+            break;
+          }
         }
+      }
+      else {
+        $store = end($stores);
       }
     }
 
@@ -54,23 +59,16 @@ class MultistoreStorage extends StoreStorage {
    * {@inheritdoc}
    */
   public function loadMultiple(array $ids = NULL, AccountInterface $user = NULL) {
-    $uid = $this->getCurrentUserId($user);
-    if ($uid === 0) {
-      // No stores for the anonymous user.
-      return [];
+    $stores = [];
+    if (!$ids && $user) {
+      $ids = parent::getQuery()->condition('uid', $user->id())->execute();
     }
-    $stores = parent::loadMultiple($ids);
+    else if (!$ids) {
+      $ids = $this->getQuery()->execute();
+    }
 
-    // Do not return the stores which are not owned by the current user except
-    // an admin ($uid === FALSE) which should be able to access any store.
-    // @todo Remove when the core #2499645 is fixed.
-    // @see https://www.drupal.org/node/2848232
-    if ($uid) {
-      foreach ($stores as $index => $store) {
-        if ($store->getOwnerId() != $uid) {
-          unset($stores[$index]);
-        }
-      }
+    if ($ids) {
+      $stores = parent::loadMultiple($ids);
     }
 
     return $stores;
