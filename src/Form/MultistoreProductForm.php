@@ -28,7 +28,7 @@ class MultistoreProductForm extends ProductForm {
           }
         }
       }
-      else if (empty($store_types)) {
+      elseif (empty($store_types)) {
         $link = Link::createFromRoute($this->t('Add a new store type.'), 'entity.commerce_store_type.add_form');
         $markup = $this->t("Products can't be created until a store type and then a store has been added. @link", ['@link' => $link->toString()]);
       }

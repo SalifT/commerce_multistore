@@ -58,7 +58,7 @@ class MultistoreNameFormatter extends StringFormatter {
         if ($content['type'] == 'inline_template') {
           $content['title'] = $elements[$delta]['#context']['value'];
         }
-        else if ($content['type'] == 'link') {
+        elseif ($content['type'] == 'link') {
           $content['title'] = $elements[$delta]['#title']['#context']['value'];
           $content['url'] = $elements[$delta]['#url'];
         }

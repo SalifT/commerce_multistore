@@ -8,7 +8,6 @@ use Drupal\user\UserInterface;
 /**
  * Overrides default argument plugin to extract a user from request.
  */
-
 class MultistoreUser extends User {
 
   /**

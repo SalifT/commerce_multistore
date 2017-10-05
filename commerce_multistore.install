@@ -5,8 +5,6 @@
  * Install and uninstall functions for the commerce_multistore module.
  */
 
-use Drupal\Core\Session\AccountInterface;
-
 /**
  * Implements hook_install().
  */
@@ -16,7 +14,7 @@ function commerce_multistore_install() {
     $config = \Drupal::configFactory();
     $views = [
       'views.view.commerce_stores',
-      'views.view.commerce_products'
+      'views.view.commerce_products',
     ];
 
     foreach ($views as $configuration) {
@@ -75,7 +73,6 @@ function commerce_multistore_install() {
   }
 }
 
-
 /**
  * Implements hook_uninstall().
  */
@@ -116,7 +113,7 @@ function commerce_multistore_uninstall() {
   if (\Drupal::moduleHandler()->moduleExists('views')) {
     $views = [
       'views.view.commerce_stores',
-      'views.view.commerce_products'
+      'views.view.commerce_products',
     ];
 
     foreach ($views as $configuration) {

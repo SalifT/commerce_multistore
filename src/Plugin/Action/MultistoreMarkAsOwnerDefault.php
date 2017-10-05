@@ -38,7 +38,7 @@ class MultistoreMarkAsOwnerDefault extends ActionBase {
         $msg = $this->t('The %name store cannot be set as owner default because they have admin permission and should use a global default store.', ['%name' => $name]);
         drupal_set_message($msg, 'warning', FALSE);
       }
-      else if (!isset($owners[$uid])) {
+      elseif (!isset($owners[$uid])) {
         if ($config->get("owners.{$uid}.default_store") != $uuid) {
           $owners[$uid] = $uuid;
           $save = $config->set("owners.{$uid}.default_store", $owners[$uid]);

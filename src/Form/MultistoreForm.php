@@ -25,10 +25,10 @@ class MultistoreForm extends StoreForm {
     // any other store available.
     $isDefault = TRUE;
     if ($default_store && !$default_store->isNew()) {
-      if(!$isDefault = $default_store->uuid() == $this->entity->uuid()) {
+      if (!$isDefault = $default_store->uuid() == $this->entity->uuid()) {
         $link = $default_store->toLink($default_store->getName(), 'edit-form')->toString()->getGeneratedLink();
         $form['warning'] = [
-          '#markup' => $this->t('Current default store: ') . "<strong>{$link}</strong>",
+          '#markup' => $this->t('Current default store:') . " <strong>{$link}</strong>",
           '#weight' => $form['name']['#weight'] - 1,
         ];
       }
@@ -49,7 +49,7 @@ class MultistoreForm extends StoreForm {
           '#type' => 'number',
           '#step' => 1,
           '#min' => 0,
-          '#weight' =>  $form['uid']['#weight'] + 1,
+          '#weight' => $form['uid']['#weight'] + 1,
           '#title' => t('The maximum stores'),
           '#description' => t('Override the number of stores of this type allowed to create by the current store owner. Leave 0 to inherit the store type limit (@limit).', ['@limit' => $limit[$entity_type] ?: $this->t('Unlimited')]),
           '#default_value' => $limit[$uid] ?: 0,
@@ -89,7 +89,7 @@ class MultistoreForm extends StoreForm {
           'store_type' => $store_type,
         ];
       }
-      else if ($multistore_limit != $form['multistore_limit']['#default_value']) {
+      elseif ($multistore_limit != $form['multistore_limit']['#default_value']) {
         $limit = $multistore_limit;
       }
     }
@@ -107,7 +107,7 @@ class MultistoreForm extends StoreForm {
       }
       $storage->clearStoreLimit($store_type, $uid);
     }
-    else if (isset($limit)) {
+    elseif (isset($limit)) {
       $storage->setStoreLimit($store_type, $limit ?: 0, $this->entity->getOwnerId());
     }
 

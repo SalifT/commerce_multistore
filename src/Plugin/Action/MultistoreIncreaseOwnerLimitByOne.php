@@ -39,7 +39,7 @@ class MultistoreIncreaseOwnerLimitByOne extends ActionBase {
         $msg = $this->t('The store type limit cannot be set for the %name because they have admin permission and should not have any limits.', ['%name' => $name]);
         drupal_set_message($msg, 'warning', FALSE);
       }
-      else if (!isset($limits[$uid][$store_type])) {
+      elseif (!isset($limits[$uid][$store_type])) {
         $limit = $storage->getStoreLimit($store_type, $uid);
         $limits[$uid][$store_type] = $limit[$uid] + 1;
         $storage->setStoreLimit($store_type, $limits[$uid][$store_type], $uid);

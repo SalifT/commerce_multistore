@@ -15,7 +15,8 @@ Implements Drupal Commerce 2.x multiple stores/store owners model.
 
 5. After the store is created visit [store/ID/products](#) tab.
 
-6. Press the *Add product* button and add a couple of products of any type available.
+6. Press the *Add product* button and add a couple of products of any type
+available.
 
 7. Revisit the [user/ID/stores](#) tab and click the store created earlier.
 
@@ -33,11 +34,12 @@ plus permissions to create and update own stores of any type. You may add
 *Delete own stores* permission for an owner if you need it in your set up.
 Additionally, the owner has permissions to create, update and delete own
 products of any type. You can edit these and other permissions for the
-*Multistore owner* role by visiting [admin/people/permissions/commerce_multistore_owner](#)
-page. There is a *Multistore admin* role which can be assigned to perform this
-and other administering tasks. This role has the same permissions as the *user
-1* except users, text formats, modules, themes handling and some other
-important tasks. Think of it as a subadmin of the site.
+*Multistore owner* role by visiting
+[admin/people/permissions/commerce_multistore_owner](#) page. There is a
+*Multistore admin* role which can be assigned to perform this and other
+administering tasks. This role has the same permissions as the *user 1* except
+users, text formats, modules, themes handling and some other important tasks.
+Think of it as a subadmin of the site.
 
 *Multistore admin* can put a limit on a number of stores of a certain store type
 allowed to create by any of the *Multistore owner*. This limit could be
@@ -71,7 +73,8 @@ $storage->setStoreLimit($store_type, $limit[$uid] + 1, $uid);
 If a *Multistore owner* attempts to add a product without any store created then
 they will be presented with the same message as the site's admin:
 
-**Products can't be created until a store has been added. [Add a new store.](#)**
+**Products can't be created until a store has been added.
+[Add a new store.](#)**
 
 The difference is that when clicking the link admin will see a list of all store
 types but a regular *Multistore owner* will see only those which are enabled to
@@ -85,8 +88,8 @@ shown.
 On product creation form a user can only assign it to own stores. At the same
 time admin can add a product to any store. Though visiting [user/ID/stores](#)
 tab the admin will see only those stores which are owned by them. So, to
-administer the site's stores they still require to visit [admin/commerce/config/stores](#)
-page.
+administer the site's stores they still require to visit
+[admin/commerce/config/stores](#) page.
 
 A regular *Multistore owner* cannot change their store owner or product author.
 Only an admin has access to the *Owner* and *Author* autocompletion fields.
@@ -110,7 +113,9 @@ default store in the case when the form is viewed by admin.
 The purpose of a default store is explained for an owner in the description of
 the appropriate field on a store form. The possible use case of an owner's
 default store for developers might be seen in the
-**[MultistoreProductDefaultStoreResolver.php](https://github.com/drugan/commerce_multistore/blob/master/src/Resolver/MultistoreProductDefaultStoreResolver.php#L47)** file. When a product is viewed
+**[MultistoreProductDefaultStoreResolver.php](https://github.com/drugan/
+commerce_multistore/blob/master/src/Resolver/
+MultistoreProductDefaultStoreResolver.php#L47)** file. When a product is viewed
 then the default store is always resolved to a product creator's store.
 Remember, with the current module products can be created and added only to
 stores owned by this product creator. The filtering of an owner's stores happens
@@ -147,13 +152,13 @@ might be found as useful features:
 
 When viewing a *product*, a *store*, a *user*, a *node* or a *profile* you may
 use the viewed entity owner ID as contextual filter for a view to display any of
-the entities owned by them. Currently, it is only feasible for *node* and *user*
-entities. For example, you may display some fields of the products and profiles
-in the sidebar when viewing any of the entities listed above. How to:
+the entities owned by them. Currently, it is only feasible for *node* and
+*user* entities. For example, you may display some fields of the products and
+profiles in the sidebar when viewing any of the entities listed above. How to:
 
 Create a view listing of some of the entities in the block and then add this
-entity contextual filter. In the section *WHEN THE FILTER VALUE IS NOT IN THE URL*
-of the filter settings choose *Provide default value* radio button and then
+entity contextual filter. In the section *WHEN THE FILTER VALUE IS NOT IN THE
+URL* of the filter settings choose *Provide default value* radio button and then
 choose *User ID from route context* in the dropdown. Do not forget to check the
 *Also look for a node and use the node author* checkbox.
 
@@ -164,10 +169,10 @@ which have less than 9.99 price value.
 
 When viewing this module's *Administer Stores* view on a [store/ID/products](#)
 page you'll find the variations next to a product title displayed in a compact
-details element which could be expanded to view a list of the product variations.
-That is another feature added by the module. You may use this configurable
-referenced entity labels' list formatter for any similar entity, not only
-product variation labels. Both in views and entity display view.
+details element which could be expanded to view a list of the product
+variations. That is another feature added by the module. You may use this
+configurable referenced entity labels' list formatter for any similar entity,
+not only product variation labels. Both in views and entity display view.
 
 A regular *Multistore owner* can see product type labels on a products view page
 which is not possible for now on the latest Drupal Commerce version.

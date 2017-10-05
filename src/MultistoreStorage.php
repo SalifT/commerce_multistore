@@ -63,7 +63,7 @@ class MultistoreStorage extends StoreStorage {
     if (!$ids && $user) {
       $ids = parent::getQuery()->condition('uid', $user->id())->execute();
     }
-    else if (!$ids) {
+    elseif (!$ids) {
       $ids = $this->getQuery()->execute();
     }
 
@@ -104,7 +104,7 @@ class MultistoreStorage extends StoreStorage {
         $config->save();
       }
     }
-    else if ($uid) {
+    elseif ($uid) {
       $config = $this->configFactory->getEditable('commerce_multistore.settings');
       if ($config->get("owners.{$uid}.default_store") != $store->uuid()) {
         $config->set("owners.{$uid}.default_store", $store->uuid());
@@ -122,7 +122,7 @@ class MultistoreStorage extends StoreStorage {
       $config->set("owners.{$uid}.store_types.{$store_type}.limit", $limit);
       $config->save();
     }
-    else if ($store_type && is_numeric($limit)) {
+    elseif ($store_type && is_numeric($limit)) {
       $config->set("store_types.{$store_type}.limit", $limit);
       $config->save();
     }
@@ -170,12 +170,12 @@ class MultistoreStorage extends StoreStorage {
         }
       }
     }
-    else if ($store_type && !$delete) {
+    elseif ($store_type && !$delete) {
       if ($config->get("store_types.{$store_type}{$limit}") !== NULL) {
         $save = $config->clear("store_types.{$store_type}{$limit}");
       }
     }
-    else if ($delete && $uid) {
+    elseif ($delete && $uid) {
       // Clear the requested uid from configuration altogether.
       if ($config->get("owners.{$uid}") !== NULL) {
         $save = $config->clear("owners.{$uid}");
@@ -210,7 +210,7 @@ class MultistoreStorage extends StoreStorage {
   /**
    * Helper method to check the current user access to a commerce store.
    *
-   * @return FALSE|int
+   * @return false|int
    *   FALSE if the user is admin; user ID if the user has permission to view
    *   own store; an anonymous user ID (0) otherwise.
    */
@@ -222,7 +222,7 @@ class MultistoreStorage extends StoreStorage {
       $uid = $user->hasPermission('view own commerce_store') ? $user->id() : 0;
     }
 
-    return  $uid;
+    return $uid;
   }
 
 }

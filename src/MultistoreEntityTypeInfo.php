@@ -64,9 +64,9 @@ class MultistoreEntityTypeInfo implements ContainerInjectionInterface {
       $route_parameters = $url->getRouteParameters();
       $options = $url->getOptions();
       $operations['multistore_products'] = [
-      'title' => $this->t('Products'),
-      'weight' => -100,
-      'url' => $url->fromRoute($route, $route_parameters, $options),
+        'title' => $this->t('Products'),
+        'weight' => -100,
+        'url' => $url->fromRoute($route, $route_parameters, $options),
       ];
 
       return $operations;

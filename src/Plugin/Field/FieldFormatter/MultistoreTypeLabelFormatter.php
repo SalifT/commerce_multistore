@@ -49,6 +49,9 @@ class MultistoreTypeLabelFormatter extends EntityReferenceLabelFormatter {
    */
   protected $usedStores = [];
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
     $this->storage = \Drupal::entityTypeManager()->getStorage('commerce_store');
@@ -96,7 +99,7 @@ class MultistoreTypeLabelFormatter extends EntityReferenceLabelFormatter {
         $owner_limit = $this->t('Owner limit: @limit', ['@limit' => $owner_limit ?: $this->t('inherit')]);
         $owner_limit .= $used_stores;
       }
-      else if (!$owner_is_admin && $is_limit) {
+      elseif (!$owner_is_admin && $is_limit) {
         if (!isset($this->usedStores[$uid][$store_type])) {
           $used = count($this->storage->getQuery()->condition('type', $store_type)->execute());
           $this->usedStores[$uid][$store_type] = $used;
@@ -111,7 +114,7 @@ class MultistoreTypeLabelFormatter extends EntityReferenceLabelFormatter {
           $settings['global'] = $global_limit;
           $settings['owner'] = $owner_limit;
         }
-        else if (!$owner_is_admin && $is_limit) {
+        elseif (!$owner_is_admin && $is_limit) {
           $settings['owner'] = $your_limit;
         }
         $content['type'] = isset($elements[$delta]['#type']) ? $elements[$delta]['#type'] : 'plain_text';

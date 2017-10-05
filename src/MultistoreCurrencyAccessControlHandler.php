@@ -12,8 +12,6 @@ use Drupal\Core\Entity\EntityInterface;
  */
 class MultistoreCurrencyAccessControlHandler extends EntityAccessControlHandler {
 
-
-
   /**
    * {@inheritdoc}
    */

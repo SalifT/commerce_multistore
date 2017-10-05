@@ -5,7 +5,6 @@ namespace Drupal\commerce_multistore;
 use Drupal\commerce\EntityAccessControlHandler;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 
@@ -21,9 +20,8 @@ class MultistoreProductAccessControlHandler extends EntityAccessControlHandler {
     $result = parent::checkFieldAccess($operation, $field_definition, $account, $items);
     if ($result->isNeutral() || !$result->isForbidden()) {
       if ($operation == 'edit' && $field_definition->getName() == 'uid') {
-         $admin = $account->hasPermission($this->entityType->getAdminPermission());
-         $result = AccessResult::allowedIf($admin);
-
+        $admin = $account->hasPermission($this->entityType->getAdminPermission());
+        $result = AccessResult::allowedIf($admin);
       }
     }
 

@@ -39,7 +39,7 @@ class MultistoreClearOwnerLimit extends ActionBase {
         $msg = $this->t("The owner limit cannot be cleared for the %name because they have admin permission and don't have any limits.", ['%name' => $name]);
         drupal_set_message($msg, 'warning', FALSE);
       }
-      else if (!isset($limits[$uid][$store_type])) {
+      elseif (!isset($limits[$uid][$store_type])) {
         $limits[$uid][$store_type] = [
           'delete' => TRUE,
           'store_type' => $store_type,
