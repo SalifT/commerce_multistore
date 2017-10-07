@@ -4,7 +4,6 @@
  * @file
  * Contains commerce_multistore.module.
  */
-
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -15,6 +14,7 @@ use Drupal\commerce_multistore\Form\MultistoreForm;
 use Drupal\commerce_multistore\MultistoreEntityTypeInfo;
 use Drupal\commerce_multistore\Form\MultistoreProductForm;
 use Drupal\commerce_multistore\MultistoreAccessControlHandler;
+use Drupal\commerce_multistore\MultistoreEntityPermissionProvider;
 use Drupal\commerce_multistore\MultistoreTypeAccessControlHandler;
 use Drupal\commerce_multistore\MultistoreProductAccessControlHandler;
 use Drupal\commerce_multistore\MultistoreCurrencyAccessControlHandler;
@@ -65,7 +65,9 @@ function commerce_multistore_entity_type_alter(array &$entity_types) {
   $entity_types['commerce_store']->setFormClass('add', MultistoreForm::class);
   $entity_types['commerce_store']->setFormClass('edit', MultistoreForm::class);
   $entity_types['commerce_store']->setFormClass('default', MultistoreForm::class);
+  $entity_types['commerce_store']->setHandlerClass('permission_provider', MultistoreEntityPermissionProvider::class);
   $entity_types['commerce_store']->setAccessClass(MultistoreAccessControlHandler::class);
+  $entity_types['commerce_store_type']->setHandlerClass('permission_provider', MultistoreEntityPermissionProvider::class);
   $entity_types['commerce_store_type']->setAccessClass(MultistoreTypeAccessControlHandler::class);
   $entity_types['commerce_product']->setFormClass('add', MultistoreProductForm::class);
   $entity_types['commerce_product']->setFormClass('edit', MultistoreProductForm::class);
