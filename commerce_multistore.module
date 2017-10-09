@@ -72,8 +72,11 @@ function commerce_multistore_entity_type_alter(array &$entity_types) {
   $entity_types['commerce_product']->setFormClass('add', MultistoreProductForm::class);
   $entity_types['commerce_product']->setFormClass('edit', MultistoreProductForm::class);
   $entity_types['commerce_product']->setFormClass('default', MultistoreProductForm::class);
+  $entity_types['commerce_product']->setHandlerClass('permission_provider', MultistoreEntityPermissionProvider::class);
   $entity_types['commerce_product']->setAccessClass(MultistoreProductAccessControlHandler::class);
+  $entity_types['commerce_product_type']->setHandlerClass('permission_provider', MultistoreEntityPermissionProvider::class);
   $entity_types['commerce_product_type']->setAccessClass(MultistoreProductTypeAccessControlHandler::class);
+  $entity_types['commerce_currency']->setHandlerClass('permission_provider', MultistoreEntityPermissionProvider::class);
   $entity_types['commerce_currency']->setAccessClass(MultistoreCurrencyAccessControlHandler::class);
 }
 
