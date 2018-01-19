@@ -2,7 +2,7 @@
 
 namespace Drupal\commerce_multistore;
 
-use Drupal\commerce\EntityAccessControlHandler;
+use Drupal\entity\EntityAccessControlHandler;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Entity\EntityInterface;
@@ -20,9 +20,11 @@ class MultistoreCurrencyAccessControlHandler extends EntityAccessControlHandler 
     if ($result->isNeutral() || !$result->isForbidden()) {
       if ($operation == 'view') {
         if (!$allowed = $account->hasPermission($this->entityType->getAdminPermission())) {
-          $allowed = $account->hasPermission('view own commerce_store');
+          // Currency code or symbol does not require specific permission as it
+          // can be viewed by user in a product price component.
+          $allowed = $account->hasPermission("view commerce_product");
         }
-        // Allow store owner view currency label in views.
+        // Allow store owner view currency code in views.
         $result = AccessResult::allowedIf($allowed);
       }
     }

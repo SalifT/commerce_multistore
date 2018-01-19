@@ -4,9 +4,7 @@ description: Implements multiple stores/store owners model.
 core: 8.x
 package: Commerce (contrib)
 dependencies:
-  - commerce
-  - commerce_store
-  - commerce_product
+  - commerce:commerce_product
 config_devel:
   install:
     - user.role.commerce_multistore_owner

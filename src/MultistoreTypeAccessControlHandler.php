@@ -2,7 +2,7 @@
 
 namespace Drupal\commerce_multistore;
 
-use Drupal\commerce\EntityAccessControlHandler;
+use Drupal\commerce\CommerceBundleAccessControlHandler;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Entity\EntityInterface;
@@ -10,7 +10,7 @@ use Drupal\Core\Entity\EntityInterface;
 /**
  * Overrides the Store type access handler.
  */
-class MultistoreTypeAccessControlHandler extends EntityAccessControlHandler {
+class MultistoreTypeAccessControlHandler extends CommerceBundleAccessControlHandler {
 
   /**
    * {@inheritdoc}
@@ -20,7 +20,8 @@ class MultistoreTypeAccessControlHandler extends EntityAccessControlHandler {
     if ($result->isNeutral() || !$result->isForbidden()) {
       if ($operation == 'view') {
         if (!$allowed = $account->hasPermission($this->entityType->getAdminPermission())) {
-          $allowed = $account->hasPermission('view own commerce_store');
+          // Having permission to update own store also implies viewing it.
+          $allowed = $account->hasPermission("update own {$entity->id()} commerce_store");
         }
         // Allow store owner view store type label in views.
         $result = AccessResult::allowedIf($allowed);

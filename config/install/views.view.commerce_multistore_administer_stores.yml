@@ -3,6 +3,9 @@ status: true
 dependencies:
   config:
     - field.storage.commerce_product.variations
+    - user.role.administrator
+    - user.role.commerce_multistore_admin
+    - user.role.commerce_multistore_owner
   module:
     - commerce
     - commerce_multistore
@@ -557,7 +560,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Name
+          label: ''
           exclude: true
           alter:
             alter_text: false
@@ -590,7 +593,7 @@ display:
           element_class: ''
           element_label_type: ''
           element_label_class: ''
-          element_label_colon: true
+          element_label_colon: false
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: false
@@ -1227,9 +1230,12 @@ display:
           entity_type: commerce_store
           plugin_id: entity_reverse
       access:
-        type: perm
+        type: role
         options:
-          perm: 'view own commerce_product'
+          role:
+            administrator: administrator
+            commerce_multistore_admin: commerce_multistore_admin
+            commerce_multistore_owner: commerce_multistore_owner
       arguments:
         store_id:
           id: store_id
@@ -1394,7 +1400,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.permissions
+        - user.roles
       tags:
         - 'config:field.storage.commerce_product.variations'
   stores_page:
@@ -2808,9 +2814,12 @@ display:
         context: '0'
         menu_name: main
       access:
-        type: perm
+        type: role
         options:
-          perm: 'view own commerce_store'
+          role:
+            administrator: administrator
+            commerce_multistore_admin: commerce_multistore_admin
+            commerce_multistore_owner: commerce_multistore_owner
       arguments:
         uid:
           id: uid
@@ -2858,7 +2867,7 @@ display:
         - url
         - url.query_args
         - user
-        - user.permissions
+        - user.roles
       cacheable: false
       max-age: 0
       tags: {  }

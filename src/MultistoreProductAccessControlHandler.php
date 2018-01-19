@@ -2,7 +2,7 @@
 
 namespace Drupal\commerce_multistore;
 
-use Drupal\commerce\EntityAccessControlHandler;
+use Drupal\entity\EntityAccessControlHandler;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
